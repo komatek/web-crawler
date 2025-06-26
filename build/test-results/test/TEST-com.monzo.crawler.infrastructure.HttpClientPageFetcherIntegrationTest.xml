@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2025-06-26T15:54:34.308Z" hostname="Sergi-Arias.local" time="0.079">
+  <properties/>
+  <testcase name="shouldRejectNonHtmlContent()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.011"/>
+  <testcase name="shouldHandleConnectionFailure()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.006"/>
+  <testcase name="shouldHandle404NotFound()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.009"/>
+  <testcase name="shouldHandleMixedCaseContentType()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.01"/>
+  <testcase name="shouldHandle500ServerError()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.008"/>
+  <testcase name="shouldHandleRedirects()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.012"/>
+  <testcase name="shouldFetchHtmlPageSuccessfully()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.009"/>
+  <testcase name="shouldHandle400ClientError()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.008"/>
+  <testcase name="shouldRejectNonHttpSchemes()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.005"/>
+  <system-out><![CDATA[17:54:34.313 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50041
+17:54:34.323 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50043
+17:54:34.325 [Test worker] ERROR c.m.c.i.HttpClientPageFetcher - Error fetching URI http://localhost:99999/page: port out of range:99999
+17:54:34.329 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50044
+17:54:34.339 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50046
+17:54:34.348 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50048
+17:54:34.356 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50050
+17:54:34.368 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50052
+17:54:34.377 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50054
+17:54:34.385 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:50056
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

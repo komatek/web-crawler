@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - RedisFrontierQueueIntegrationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>RedisFrontierQueueIntegrationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.monzo.crawler.infrastructure.html">com.monzo.crawler.infrastructure</a> &gt; RedisFrontierQueueIntegrationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">15</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">3.008s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">shouldBeThreadSafeForDequeue()</td>
+<td class="success">0.638s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldBeThreadSafeForEnqueue()</td>
+<td class="success">0.078s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldCorrectlyReportEmptyState()</td>
+<td class="success">0.014s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldEnqueueAndDequeueUri()</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldHandleConcurrentEnqueueAndDequeue()</td>
+<td class="success">1.210s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldHandleDuplicateUris()</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldHandleLargeNumberOfUris()</td>
+<td class="success">0.948s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldHandleMultipleEnqueuesAndDequeues()</td>
+<td class="success">0.011s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldHandleUriEncodingProperly()</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldHandleUrisWithSpecialCharacters()</td>
+<td class="success">0.015s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldHandleVeryLongUris()</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldMaintainFifoOrder()</td>
+<td class="success">0.031s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldPersistDataAcrossConnections()</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldReturnNullWhenDequeueingFromEmptyQueue()</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">shouldStartEmpty()</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>17:54:36.227 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:36.250 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:36.888 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:38.107 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:38.177 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:38.186 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:38.201 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:39.149 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:39.158 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:39.166 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:39.176 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:39.189 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:39.199 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:39.211 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+17:54:39.218 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Redis test setup created successfully
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.13</a> at Jun 26, 2025, 5:54:44 PM</p>
+</div>
+</div>
+</body>
+</html>
