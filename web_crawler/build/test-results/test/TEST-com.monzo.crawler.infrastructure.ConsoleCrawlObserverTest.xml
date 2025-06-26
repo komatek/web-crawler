@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-06-26T15:54:34.213Z" hostname="Sergi-Arias.local" time="0.095">
+  <properties/>
+  <testcase name="shouldLogPageCrawledWithNewLinks()" classname="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" time="0.086"/>
+  <testcase name="shouldLogPageCrawledWithMixOfNewAndSeenLinks()" classname="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" time="0.001"/>
+  <testcase name="shouldMaintainStateAcrossMultipleCrawls()" classname="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" time="0.001"/>
+  <testcase name="shouldSortLinksAlphabetically()" classname="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" time="0.001"/>
+  <testcase name="shouldLogPageCrawledWithNoLinks()" classname="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" time="0.0"/>
+  <testcase name="shouldLogCrawlFailedWithError()" classname="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" time="0.002"/>
+  <testcase name="shouldLogCrawlFailedWithoutError()" classname="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" time="0.001"/>
+  <testcase name="shouldLogPageCrawledWithAllAlreadySeenLinks()" classname="com.monzo.crawler.infrastructure.ConsoleCrawlObserverTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
