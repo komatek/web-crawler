@@ -101,6 +101,10 @@ crawler.redis.url=redis://localhost:6379
 
 # Performance tuning  
 crawler.max.concurrent.requests=80
+crawler.http.timeout.seconds=5
+
+# HTTP headers
+crawler.user.agent=Monzo-Java-Crawler/1.0
 ```
 
 Override with environment variables:
@@ -136,18 +140,89 @@ This implementation prioritizes **simplicity for the coding challenge**. For pro
 - **Single domain only** - can't crawl across multiple sites
 - **No JavaScript rendering** - only parses static HTML
 - **Basic rate limiting** - simple semaphore approach
+- **Limited observability** - basic console logging only
 
 ### Production Improvements Needed
+
+#### 1. Observability & Monitoring
+```java
+// Metrics collection with Micrometer
+@Component
+public class CrawlerMetrics {
+    private final Counter pagesCrawled;
+    private final Timer httpRequestTime;
+    private final Gauge queueSize;
+    
+    // Track key metrics:
+    // - Pages crawled per second
+    // - HTTP response times by domain
+    // - Queue depth and growth rate
+    // - Error rates by type
+    // - Memory usage trends
+}
+```
+
+**Key metrics to monitor:**
+- `crawler.pages.crawled.total` - Crawling throughput
+- `http.request.duration` - Response time distribution
+- `crawler.frontier.queue.size` - Queue depth
+- `crawler.errors.total` - Error rates by type
+- `jvm.memory.used` - Memory consumption
+
+#### 2. Health Checks
+```java
+@Component
+public class CrawlerHealthIndicator implements HealthIndicator {
+    @Override
+    public Health health() {
+        return Health.up()
+            .withDetail("redis_status", redis.ping())
+            .withDetail("pages_crawled", getTotalPagesCrawled())
+            .withDetail("queue_size", getQueueSize())
+            .withDetail("error_rate", getRecentErrorRate())
+            .build();
+    }
+}
+```
+
+**Health endpoints:**
+- `/health` - Overall system health
+- `/metrics` - Prometheus metrics
+- `/info` - Build and configuration info
+
+#### 3. Enhanced Error Handling
+- **Exponential backoff**: Progressive delays for failed requests
+- **Circuit breakers**: Skip temporarily failing hosts
+- **Dead letter queues**: Handle permanently failed URLs
+- **Retry policies**: Configurable retry strategies per error type
+
+#### 4. Additional Improvements
 1. **Database migration**: PostgreSQL for durability and complex queries
 2. **Robots.txt support**: Respect site crawling policies
-3. **Enhanced error handling**: Exponential backoff, circuit breakers
-4. **Monitoring**: Metrics, health checks, performance dashboards
-5. **Advanced features**: JavaScript rendering, sitemap parsing, content deduplication
+3. **Distributed tracing**: Track requests across components
+4. **Advanced features**: JavaScript rendering, sitemap parsing, content deduplication
+
+#### 5. Observability Stack
+```yaml
+# Complete monitoring setup
+services:
+  prometheus:    # Metrics collection
+  grafana:       # Dashboards and alerting  
+  jaeger:        # Distributed tracing
+  elasticsearch: # Log aggregation
+```
+
+**Production dashboards would show:**
+- Real-time crawling throughput
+- Error rates and failure patterns
+- Resource utilization trends
+- Queue health and backlog growth
+- Domain-specific performance metrics
 
 ## Design Decisions
 
 ### URI Normalization
-```java
+```
 // Handles URL variations:
 https://monzo.com/page/ → https://monzo.com/page  (remove trailing slash)
 https://monzo.com → https://monzo.com/             (add root path)
