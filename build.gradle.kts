@@ -43,6 +43,9 @@ dependencies {
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.8"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:testcontainers")
+
+    // For testing
+    implementation("com.google.guava:guava:32.1.2-jre")
 }
 
 tasks.withType<JavaCompile> {

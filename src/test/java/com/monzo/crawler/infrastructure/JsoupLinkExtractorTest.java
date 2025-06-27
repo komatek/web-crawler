@@ -1,7 +1,5 @@
 package com.monzo.crawler.infrastructure;
 
-import com.monzo.crawler.infrastructure.JsoupLinkExtractor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -11,18 +9,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class JsoupLinkExtractorTest {
 
-    private JsoupLinkExtractor linkExtractor;
-    private URI baseUri;
-
-    @BeforeEach
-    void setUp() {
-        linkExtractor = new JsoupLinkExtractor();
-        baseUri = URI.create("https://example.com");
-    }
+    private final JsoupLinkExtractor linkExtractor = new JsoupLinkExtractor();
+    private final URI baseUri = URI.create("https://example.com");
 
     @Test
     void shouldExtractAbsoluteHttpLinks() {
-        // Given
         String html = """
             <html>
                 <body>
@@ -32,10 +23,8 @@ class JsoupLinkExtractorTest {
             </html>
             """;
 
-        // When
         Set<URI> links = linkExtractor.extractLinks(html, baseUri);
 
-        // Then
         assertThat(links).containsExactlyInAnyOrder(
                 URI.create("https://example.com/page1"),
                 URI.create("https://example.com/page2")
@@ -44,7 +33,6 @@ class JsoupLinkExtractorTest {
 
     @Test
     void shouldExtractRelativeLinks() {
-        // Given
         String html = """
             <html>
                 <body>
@@ -55,10 +43,8 @@ class JsoupLinkExtractorTest {
             </html>
             """;
 
-        // When
         Set<URI> links = linkExtractor.extractLinks(html, baseUri);
 
-        // Then
         assertThat(links).containsExactlyInAnyOrder(
                 URI.create("https://example.com/about"),
                 URI.create("https://example.com/contact.html"),
@@ -68,7 +54,6 @@ class JsoupLinkExtractorTest {
 
     @Test
     void shouldFilterOutMailtoLinks() {
-        // Given
         String html = """
             <html>
                 <body>

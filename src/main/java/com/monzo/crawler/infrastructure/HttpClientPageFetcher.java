@@ -1,5 +1,6 @@
 package com.monzo.crawler.infrastructure;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.monzo.crawler.domain.model.PageData;
 import com.monzo.crawler.domain.port.out.PageFetcher;
 import com.monzo.crawler.infrastructure.config.ConfigurationLoader;
@@ -22,7 +23,7 @@ public class HttpClientPageFetcher implements PageFetcher {
         this(timeout, new ConfigurationLoader());
     }
 
-    // Package-private constructor for testing
+    @VisibleForTesting
     HttpClientPageFetcher(Duration timeout, ConfigurationLoader config) {
         this.requestTimeout = timeout;
         this.userAgent = config.getUserAgent();

@@ -1,323 +1,483 @@
 package com.monzo.crawler.application;
 
-import com.monzo.crawler.domain.port.out.*;
-import com.monzo.crawler.domain.model.PageData;
-import java.net.URI;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import org.junit.jupiter.api.BeforeEach;
+import com.monzo.crawler.domain.service.CrawlStateService;
+import com.monzo.crawler.domain.service.PageProcessingService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.net.URI;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-
-@ExtendWith(MockitoExtension.class)
 class WebCrawlerUseCaseTest {
 
-    @Mock
-    private PageFetcher pageFetcher;
+    private final PageProcessingService pageProcessingService = mock(PageProcessingService.class);
+    private final CrawlStateService crawlStateService = mock(CrawlStateService.class);
 
-    @Mock
-    private LinkExtractor linkExtractor;
-
-    @Mock
-    private CrawlObserver crawlObserver;
-
-    @Mock
-    private FrontierQueue frontierQueue;
-
-    @Mock
-    private VisitedRepository visitedRepository;
-
-    private WebCrawlerUseCase webCrawler;
-
-    private static final String DOMAIN = "example.com";
     private static final URI START_URI = URI.create("https://example.com");
     private static final URI PAGE_1_URI = URI.create("https://example.com/page1");
     private static final URI PAGE_2_URI = URI.create("https://example.com/page2");
-    private static final URI EXTERNAL_URI = URI.create("https://external.com/page");
-    private static final int MAX_CONCURRENT_REQUESTS = 10;
-    private BlockingQueue<URI> testQueue;
+    private static final int MAX_CONCURRENT_REQUESTS = 2;
 
-    @BeforeEach
-    void setUp() {
-        webCrawler = new WebCrawlerUseCase(pageFetcher, linkExtractor, crawlObserver, frontierQueue, visitedRepository, DOMAIN, MAX_CONCURRENT_REQUESTS);
-        testQueue = new LinkedBlockingQueue<>();
+    private final WebCrawlerUseCase webCrawler = new WebCrawlerUseCase(
+            pageProcessingService,
+            crawlStateService,
+            MAX_CONCURRENT_REQUESTS
+    );
 
-        // Setup frontier queue mock to use our test queue
-        when(frontierQueue.dequeue()).thenAnswer(invocation -> testQueue.poll());
-        when(frontierQueue.isEmpty()).thenAnswer(invocation -> testQueue.isEmpty());
+    @Test
+    void shouldCreateWebCrawlerWithValidDependencies() {
+        // Given
+        PageProcessingService mockPageProcessingService = mock(PageProcessingService.class);
+        CrawlStateService mockCrawlStateService = mock(CrawlStateService.class);
+        int maxConcurrentRequests = 5;
+
+        // When
+        WebCrawlerUseCase crawler = new WebCrawlerUseCase(
+                mockPageProcessingService,
+                mockCrawlStateService,
+                maxConcurrentRequests
+        );
+
+        // Then
+        assertNotNull(crawler);
+    }
+
+    @Test
+    void shouldThrowNullPointerExceptionWhenPageProcessingServiceIsNull() {
+        // Given
+        CrawlStateService mockCrawlStateService = mock(CrawlStateService.class);
+        int maxConcurrentRequests = 5;
+
+        // When & Then
+        assertThrows(NullPointerException.class, () -> {
+            new WebCrawlerUseCase(null, mockCrawlStateService, maxConcurrentRequests);
+        });
+    }
+
+    @Test
+    void shouldThrowNullPointerExceptionWhenCrawlStateServiceIsNull() {
+        // Given
+        PageProcessingService mockPageProcessingService = mock(PageProcessingService.class);
+        int maxConcurrentRequests = 5;
+
+        // When & Then
+        assertThrows(NullPointerException.class, () -> {
+            new WebCrawlerUseCase(mockPageProcessingService, null, maxConcurrentRequests);
+        });
+    }
+
+    @Test
+    void shouldThrowNullPointerExceptionWhenBothServicesAreNull() {
+        // Given
+        int maxConcurrentRequests = 5;
+
+        // When & Then
+        assertThrows(NullPointerException.class, () -> {
+            new WebCrawlerUseCase(null, null, maxConcurrentRequests);
+        });
+    }
+
+    @Test
+    void shouldAcceptZeroMaxConcurrentRequests() {
+        // Given
+        PageProcessingService mockPageProcessingService = mock(PageProcessingService.class);
+        CrawlStateService mockCrawlStateService = mock(CrawlStateService.class);
+        int maxConcurrentRequests = 0;
+
+        // When
+        WebCrawlerUseCase crawler = new WebCrawlerUseCase(
+                mockPageProcessingService,
+                mockCrawlStateService,
+                maxConcurrentRequests
+        );
+
+        // Then
+        assertNotNull(crawler);
+    }
+
+    @Test
+    void shouldAcceptNegativeMaxConcurrentRequests() {
+        // Given
+        PageProcessingService mockPageProcessingService = mock(PageProcessingService.class);
+        CrawlStateService mockCrawlStateService = mock(CrawlStateService.class);
+        int maxConcurrentRequests = -1;
+
+        // When
+        WebCrawlerUseCase crawler = new WebCrawlerUseCase(
+                mockPageProcessingService,
+                mockCrawlStateService,
+                maxConcurrentRequests
+        );
+
+        // Then
+        assertNotNull(crawler);
+    }
+
+    @Test
+    void shouldAddStartUriToFrontierWhenCrawlStarts() {
+        // Given
+        when(crawlStateService.getNextUri()).thenReturn(null);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
+
+        // When
+        webCrawler.crawl(START_URI);
+
+        // Then
+        verify(crawlStateService).tryAddToFrontier(START_URI);
+    }
+
+    @Test
+    void shouldProcessSingleUriWhenOnlyOneUriInFrontier() {
+        // Given
+        when(crawlStateService.getNextUri())
+                .thenReturn(START_URI)
+                .thenReturn(null);
+        when(crawlStateService.markAsVisited(START_URI)).thenReturn(true);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
+
+        // When
+        webCrawler.crawl(START_URI);
+
+        // Then
+        verify(crawlStateService).markAsVisited(START_URI);
+        verify(pageProcessingService).processPage(START_URI);
+    }
+
+    @Test
+    void shouldNotProcessUriWhenAlreadyVisited() {
+        // Given
+        when(crawlStateService.getNextUri())
+                .thenReturn(START_URI)
+                .thenReturn(null);
+        when(crawlStateService.markAsVisited(START_URI)).thenReturn(false); // Already visited
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
+
+        // When
+        webCrawler.crawl(START_URI);
+
+        // Then
+        verify(crawlStateService).markAsVisited(START_URI);
+        verify(pageProcessingService, never()).processPage(any());
+    }
+
+    @Test
+    void shouldProcessMultipleUrisWhenMultipleUrisInFrontier() {
+        // Given
+        when(crawlStateService.getNextUri())
+                .thenReturn(PAGE_1_URI)
+                .thenReturn(PAGE_2_URI)
+                .thenReturn(null);
+        when(crawlStateService.markAsVisited(PAGE_1_URI)).thenReturn(true);
+        when(crawlStateService.markAsVisited(PAGE_2_URI)).thenReturn(true);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
+
+        // When
+        webCrawler.crawl(START_URI);
+
+        // Then
+        verify(pageProcessingService).processPage(PAGE_1_URI);
+        verify(pageProcessingService).processPage(PAGE_2_URI);
+        verify(crawlStateService).markAsVisited(PAGE_1_URI);
+        verify(crawlStateService).markAsVisited(PAGE_2_URI);
+    }
+
+    @Test
+    void shouldSkipAlreadyVisitedUrisInMultipleUriScenario() {
+        // Given
+        when(crawlStateService.getNextUri())
+                .thenReturn(PAGE_1_URI)
+                .thenReturn(PAGE_2_URI)
+                .thenReturn(null);
+        when(crawlStateService.markAsVisited(PAGE_1_URI)).thenReturn(true);
+        when(crawlStateService.markAsVisited(PAGE_2_URI)).thenReturn(false); // Already visited
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
+
+        // When
+        webCrawler.crawl(START_URI);
+
+        // Then
+        verify(pageProcessingService).processPage(PAGE_1_URI);
+        verify(pageProcessingService, never()).processPage(PAGE_2_URI);
+        verify(crawlStateService).markAsVisited(PAGE_1_URI);
+        verify(crawlStateService).markAsVisited(PAGE_2_URI);
+    }
+
+    @Test
+    void shouldWaitForTasksToCompleteWhenFrontierBecomesEmpty() throws InterruptedException {
+        // Given
+        CountDownLatch processingStarted = new CountDownLatch(1);
+        CountDownLatch processingCanFinish = new CountDownLatch(1);
+
+        when(crawlStateService.getNextUri())
+                .thenReturn(PAGE_1_URI)
+                .thenReturn(null)  // First time frontier is empty
+                .thenReturn(null); // Second time frontier is still empty
+        when(crawlStateService.markAsVisited(PAGE_1_URI)).thenReturn(true);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
+
+        // Mock page processing to simulate slow processing
         doAnswer(invocation -> {
-            URI uri = invocation.getArgument(0);
-            testQueue.offer(uri);
+            processingStarted.countDown();
+            assertTrue(processingCanFinish.await(5, TimeUnit.SECONDS));
             return null;
-        }).when(frontierQueue).enqueue(any(URI.class));
+        }).when(pageProcessingService).processPage(PAGE_1_URI);
+
+        // When
+        Thread crawlThread = new Thread(() -> webCrawler.crawl(START_URI));
+        crawlThread.start();
+
+        // Wait for processing to start
+        assertTrue(processingStarted.await(5, TimeUnit.SECONDS));
+
+        // Allow processing to finish
+        processingCanFinish.countDown();
+
+        // Wait for crawl to complete
+        crawlThread.join(5000);
+        assertFalse(crawlThread.isAlive());
+
+        // Then
+        verify(pageProcessingService).processPage(PAGE_1_URI);
     }
 
     @Test
-    void shouldCrawlSinglePageSuccessfully() {
-        URI normalizedStartUri = START_URI.resolve("/");
-
+    void shouldRespectConcurrencyLimit() throws InterruptedException {
         // Given
-        String htmlContent = "<html><body>Test page</body></html>";
-        PageData successPageData = new PageData(htmlContent, PageData.Status.SUCCESS);
-        Set<URI> extractedLinks = Set.of(PAGE_1_URI);
+        AtomicInteger concurrentTasks = new AtomicInteger(0);
+        AtomicInteger maxConcurrentTasks = new AtomicInteger(0);
+        CountDownLatch firstBatchStarted = new CountDownLatch(MAX_CONCURRENT_REQUESTS);
+        CountDownLatch allTasksStarted = new CountDownLatch(3);
+        CountDownLatch tasksCanFinish = new CountDownLatch(1);
 
-        // Setup visited repository - start URI not visited, but PAGE_1_URI is visited when checked
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(true);
-        when(visitedRepository.markVisited(PAGE_1_URI)).thenReturn(true);
-        when(visitedRepository.isVisited(PAGE_1_URI)).thenReturn(false);
+        URI uri1 = URI.create("https://example.com/page1");
+        URI uri2 = URI.create("https://example.com/page2");
+        URI uri3 = URI.create("https://example.com/page3");
 
-        when(pageFetcher.fetch(normalizedStartUri)).thenReturn(successPageData);
-        when(pageFetcher.fetch(PAGE_1_URI)).thenReturn(new PageData(null, PageData.Status.NOT_FOUND));
-        when(linkExtractor.extractLinks(htmlContent, normalizedStartUri)).thenReturn(extractedLinks);
+        when(crawlStateService.getNextUri())
+                .thenReturn(uri1)
+                .thenReturn(uri2)
+                .thenReturn(uri3)
+                .thenReturn(null);
+        when(crawlStateService.markAsVisited(any())).thenReturn(true);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(false, false, false, true);
+
+        // Mock page processing to track concurrency
+        doAnswer(invocation -> {
+            int current = concurrentTasks.incrementAndGet();
+            maxConcurrentTasks.updateAndGet(max -> Math.max(max, current));
+            firstBatchStarted.countDown();
+            allTasksStarted.countDown();
+            assertTrue(tasksCanFinish.await(5, TimeUnit.SECONDS));
+            concurrentTasks.decrementAndGet();
+            return null;
+        }).when(pageProcessingService).processPage(any());
 
         // When
-        webCrawler.crawl(START_URI);
+        Thread crawlThread = new Thread(() -> webCrawler.crawl(START_URI));
+        crawlThread.start();
+
+        // Wait for first batch to start (should be limited by semaphore)
+        assertTrue(firstBatchStarted.await(5, TimeUnit.SECONDS));
+
+        // Give a moment for the third task to try to start (it should be blocked)
+        Thread.sleep(100);
+
+        // At this point, only MAX_CONCURRENT_REQUESTS tasks should be running
+        assertEquals(MAX_CONCURRENT_REQUESTS, concurrentTasks.get(),
+                "Should have exactly " + MAX_CONCURRENT_REQUESTS + " concurrent tasks");
+
+        // Allow tasks to finish
+        tasksCanFinish.countDown();
+
+        // Wait for all tasks to complete
+        assertTrue(allTasksStarted.await(5, TimeUnit.SECONDS));
+
+        // Wait for crawl to complete
+        crawlThread.join(5000);
+        assertFalse(crawlThread.isAlive());
 
         // Then
-        verify(frontierQueue).enqueue(normalizedStartUri);
-        verify(frontierQueue).enqueue(PAGE_1_URI);
-        verify(visitedRepository).markVisited(normalizedStartUri);
-        verify(visitedRepository).markVisited(PAGE_1_URI);
-        verify(pageFetcher).fetch(normalizedStartUri);
-        verify(pageFetcher).fetch(PAGE_1_URI);
-        verify(linkExtractor).extractLinks(htmlContent, normalizedStartUri);
-        verify(crawlObserver).onPageCrawled(normalizedStartUri, extractedLinks);
-        verify(crawlObserver).onCrawlFailed(PAGE_1_URI, "NOT_FOUND", null);
+        assertTrue(maxConcurrentTasks.get() <= MAX_CONCURRENT_REQUESTS,
+                "Max concurrent tasks was " + maxConcurrentTasks.get() +
+                        " but should not exceed " + MAX_CONCURRENT_REQUESTS);
+        verify(pageProcessingService, times(3)).processPage(any());
     }
 
     @Test
-    void shouldCrawlMultiplePagesInSameDomain() throws InterruptedException {
-        URI normalizedStartUri = START_URI.resolve("/");
-
+    void shouldHandleInterruptedExceptionGracefully() {
         // Given
-        String htmlContent1 = "<html><body>Page 1</body></html>";
-        String htmlContent2 = "<html><body>Page 2</body></html>";
+        when(crawlStateService.getNextUri()).thenReturn(PAGE_1_URI).thenReturn(null);
+        when(crawlStateService.markAsVisited(PAGE_1_URI)).thenReturn(true);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
 
-        PageData pageData1 = new PageData(htmlContent1, PageData.Status.SUCCESS);
-        PageData pageData2 = new PageData(htmlContent2, PageData.Status.SUCCESS);
-
-        Set<URI> linksFromStart = Set.of(PAGE_1_URI, PAGE_2_URI);
-        Set<URI> linksFromPage1 = Set.of(PAGE_2_URI);
-        Set<URI> linksFromPage2 = Set.of();
-
-        // Setup visited repository - PAGE_2_URI appears twice but should only be processed once
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(true);
-        when(visitedRepository.markVisited(PAGE_1_URI)).thenReturn(true);
-        when(visitedRepository.markVisited(PAGE_2_URI))
-                .thenReturn(true)  // First time: not visited, mark as visited
-                .thenReturn(false); // Second time: already visited, don't process
-        when(visitedRepository.isVisited(any())).thenReturn(false);
-
-        when(pageFetcher.fetch(normalizedStartUri)).thenReturn(pageData1);
-        when(pageFetcher.fetch(PAGE_1_URI)).thenReturn(pageData2);
-        when(pageFetcher.fetch(PAGE_2_URI)).thenReturn(pageData2);
-
-        when(linkExtractor.extractLinks(htmlContent1, normalizedStartUri)).thenReturn(linksFromStart);
-        when(linkExtractor.extractLinks(htmlContent2, PAGE_1_URI)).thenReturn(linksFromPage1);
-        when(linkExtractor.extractLinks(htmlContent2, PAGE_2_URI)).thenReturn(linksFromPage2);
+        // Mock page processing to throw InterruptedException
+        doAnswer(invocation -> {
+            Thread.currentThread().interrupt();
+            throw new InterruptedException("Task interrupted");
+        }).when(pageProcessingService).processPage(PAGE_1_URI);
 
         // When
         webCrawler.crawl(START_URI);
 
         // Then
-        verify(visitedRepository).markVisited(normalizedStartUri);
-        verify(visitedRepository).markVisited(PAGE_1_URI);
-        verify(visitedRepository, times(2)).markVisited(PAGE_2_URI); // Called twice but only processed once
-        verify(pageFetcher).fetch(normalizedStartUri);
-        verify(pageFetcher).fetch(PAGE_1_URI);
-        verify(pageFetcher).fetch(PAGE_2_URI);
-        verify(crawlObserver).onPageCrawled(normalizedStartUri, linksFromStart);
-        verify(crawlObserver).onPageCrawled(PAGE_1_URI, linksFromPage1);
-        verify(crawlObserver).onPageCrawled(PAGE_2_URI, linksFromPage2);
+        verify(pageProcessingService).processPage(PAGE_1_URI);
+        // Should complete without throwing exception
     }
 
     @Test
-    void shouldNotCrawlExternalDomains() {
-        URI normalizedStartUri = START_URI.resolve("/");
-
+    void shouldContinueCrawlingWhenNewUrisAddedDuringProcessing() throws InterruptedException {
         // Given
-        String htmlContent = "<html><body>Test page</body></html>";
-        PageData successPageData = new PageData(htmlContent, PageData.Status.SUCCESS);
-        Set<URI> extractedLinks = Set.of(EXTERNAL_URI, PAGE_1_URI);
+        CountDownLatch firstProcessingStarted = new CountDownLatch(1);
+        CountDownLatch firstProcessingCanFinish = new CountDownLatch(1);
 
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(true);
-        when(visitedRepository.markVisited(PAGE_1_URI)).thenReturn(true);
-        when(visitedRepository.isVisited(PAGE_1_URI)).thenReturn(false);
+        when(crawlStateService.getNextUri())
+                .thenReturn(PAGE_1_URI)
+                .thenReturn(null)     // First check - frontier empty
+                .thenReturn(PAGE_2_URI) // After waiting, new URI appears
+                .thenReturn(null);    // Finally empty
+        when(crawlStateService.markAsVisited(any())).thenReturn(true);
+        when(crawlStateService.isFrontierEmpty())
+                .thenReturn(false)    // Initially not empty
+                .thenReturn(true)     // Empty after first URI
+                .thenReturn(false)    // Not empty when PAGE_2_URI added
+                .thenReturn(true);    // Finally empty
 
-        when(pageFetcher.fetch(normalizedStartUri)).thenReturn(successPageData);
-        when(pageFetcher.fetch(PAGE_1_URI)).thenReturn(new PageData(null, PageData.Status.NOT_FOUND));
-        when(linkExtractor.extractLinks(htmlContent, normalizedStartUri)).thenReturn(extractedLinks);
+        doAnswer(invocation -> {
+            if (invocation.getArgument(0).equals(PAGE_1_URI)) {
+                firstProcessingStarted.countDown();
+                assertTrue(firstProcessingCanFinish.await(5, TimeUnit.SECONDS));
+            }
+            return null;
+        }).when(pageProcessingService).processPage(any());
 
         // When
-        webCrawler.crawl(START_URI);
+        Thread crawlThread = new Thread(() -> webCrawler.crawl(START_URI));
+        crawlThread.start();
+
+        // Wait for first processing to start
+        assertTrue(firstProcessingStarted.await(5, TimeUnit.SECONDS));
+
+        // Allow first processing to finish
+        firstProcessingCanFinish.countDown();
+
+        // Wait for crawl to complete
+        crawlThread.join(5000);
+        assertFalse(crawlThread.isAlive());
 
         // Then
-        verify(frontierQueue).enqueue(normalizedStartUri);
-        verify(frontierQueue).enqueue(PAGE_1_URI); // Same domain should be enqueued
-        verify(frontierQueue, never()).enqueue(EXTERNAL_URI); // External domain should not be enqueued
-        verify(pageFetcher).fetch(normalizedStartUri);
-        verify(pageFetcher).fetch(PAGE_1_URI);
-        verify(pageFetcher, never()).fetch(EXTERNAL_URI);
-        verify(crawlObserver).onPageCrawled(normalizedStartUri, extractedLinks);
-        verify(crawlObserver).onCrawlFailed(PAGE_1_URI, "NOT_FOUND", null);
+        verify(pageProcessingService).processPage(PAGE_1_URI);
+        verify(pageProcessingService).processPage(PAGE_2_URI);
     }
 
     @Test
-    void shouldNotCrawlSamePageTwice() {
-        URI normalizedStartUri = START_URI.resolve("/");
-
+    void shouldCompleteSuccessfullyWhenNoUrisInFrontier() {
         // Given
-        String htmlContent = "<html><body>Test page</body></html>";
-        PageData successPageData = new PageData(htmlContent, PageData.Status.SUCCESS);
-        Set<URI> extractedLinks = Set.of(PAGE_1_URI);
-
-        // Setup visited repository - first call returns true (not visited), second returns false (already visited)
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(true);
-        when(visitedRepository.markVisited(PAGE_1_URI)).thenReturn(true);
-        when(visitedRepository.isVisited(normalizedStartUri)).thenReturn(true); // Already visited when found as link
-        when(visitedRepository.isVisited(PAGE_1_URI)).thenReturn(false);
-
-        when(pageFetcher.fetch(normalizedStartUri)).thenReturn(successPageData);
-        when(pageFetcher.fetch(PAGE_1_URI)).thenReturn(successPageData);
-        when(linkExtractor.extractLinks(htmlContent, normalizedStartUri)).thenReturn(extractedLinks);
-        when(linkExtractor.extractLinks(htmlContent, PAGE_1_URI)).thenReturn(Set.of(normalizedStartUri));
+        when(crawlStateService.getNextUri()).thenReturn(null);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
 
         // When
         webCrawler.crawl(START_URI);
 
         // Then
-        verify(visitedRepository).markVisited(normalizedStartUri);
-        verify(visitedRepository).markVisited(PAGE_1_URI);
-        verify(pageFetcher).fetch(normalizedStartUri);
-        verify(pageFetcher).fetch(PAGE_1_URI);
-        verify(crawlObserver).onPageCrawled(normalizedStartUri, extractedLinks);
-        verify(crawlObserver).onPageCrawled(PAGE_1_URI, Set.of(normalizedStartUri));
-
-        // Verify start URI is not enqueued again since it's already visited
-        verify(frontierQueue, times(1)).enqueue(normalizedStartUri); // Only initial enqueue
+        verify(crawlStateService).tryAddToFrontier(START_URI);
+        verify(crawlStateService).getNextUri();
+        verify(pageProcessingService, never()).processPage(any());
     }
 
     @Test
-    void shouldHandlePageFetchFailure() {
-        URI normalizedStartUri = START_URI.resolve("/");
-
+    void shouldCallServicesInCorrectOrder() {
         // Given
-        PageData failedPageData = new PageData(null, PageData.Status.SERVER_ERROR);
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(true);
-        when(pageFetcher.fetch(normalizedStartUri)).thenReturn(failedPageData);
+        when(crawlStateService.getNextUri())
+                .thenReturn(START_URI)
+                .thenReturn(null);
+        when(crawlStateService.markAsVisited(START_URI)).thenReturn(true);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
 
         // When
         webCrawler.crawl(START_URI);
 
-        // Then
-        verify(visitedRepository).markVisited(normalizedStartUri);
-        verify(pageFetcher).fetch(normalizedStartUri);
-        verify(linkExtractor, never()).extractLinks(any(), any());
-        verify(crawlObserver).onCrawlFailed(normalizedStartUri, "SERVER_ERROR", null);
-        verify(crawlObserver, never()).onPageCrawled(any(), any());
+        // Then - verify the order of operations
+        var inOrder = inOrder(crawlStateService, pageProcessingService);
+        inOrder.verify(crawlStateService).tryAddToFrontier(START_URI);
+        inOrder.verify(crawlStateService).getNextUri();
+        inOrder.verify(crawlStateService).markAsVisited(START_URI);
+        inOrder.verify(pageProcessingService).processPage(START_URI);
     }
 
     @Test
-    void shouldHandleUnexpectedExceptions() {
-        URI normalizedStartUri = START_URI.resolve("/");
-
+    void shouldHandleNullUriFromGetNextUri() {
         // Given
-        RuntimeException expectedException = new RuntimeException("Unexpected error");
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(true);
-        when(pageFetcher.fetch(normalizedStartUri)).thenThrow(expectedException);
+        when(crawlStateService.getNextUri()).thenReturn(null);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
 
         // When
         webCrawler.crawl(START_URI);
 
         // Then
-        verify(visitedRepository).markVisited(normalizedStartUri);
-        verify(pageFetcher).fetch(normalizedStartUri);
-
-        ArgumentCaptor<Throwable> errorCaptor = ArgumentCaptor.forClass(Throwable.class);
-        verify(crawlObserver).onCrawlFailed(eq(normalizedStartUri), eq("UNEXPECTED_ERROR"), errorCaptor.capture());
-
-        assertThat(errorCaptor.getValue()).isEqualTo(expectedException);
+        verify(crawlStateService).tryAddToFrontier(START_URI);
+        verify(crawlStateService).getNextUri();
+        verify(crawlStateService, never()).markAsVisited(any());
+        verify(pageProcessingService, never()).processPage(any());
     }
 
     @Test
-    void shouldNormalizeUris() {
-        URI normalizedStartUri = START_URI.resolve("/");
-
+    void shouldContinueProcessingEvenWhenSomeTasksFail() {
         // Given
-        URI uriWithTrailingSlash = URI.create("https://example.com/page/");
-        URI uriWithoutTrailingSlash = URI.create("https://example.com/page");
+        when(crawlStateService.getNextUri())
+                .thenReturn(PAGE_1_URI)
+                .thenReturn(PAGE_2_URI)
+                .thenReturn(null);
+        when(crawlStateService.markAsVisited(any())).thenReturn(true);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
 
-        String htmlContent = "<html><body>Test page</body></html>";
-        PageData successPageData = new PageData(htmlContent, PageData.Status.SUCCESS);
-
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(true);
-        when(visitedRepository.markVisited(uriWithoutTrailingSlash)).thenReturn(true);
-        when(visitedRepository.isVisited(uriWithoutTrailingSlash)).thenReturn(false);
-
-        when(pageFetcher.fetch(normalizedStartUri)).thenReturn(successPageData);
-        when(pageFetcher.fetch(uriWithoutTrailingSlash)).thenReturn(new PageData(null, PageData.Status.NOT_FOUND));
-        when(linkExtractor.extractLinks(htmlContent, normalizedStartUri)).thenReturn(Set.of(uriWithTrailingSlash));
+        // Mock first page to throw exception, second to succeed
+        doThrow(new RuntimeException("Processing failed"))
+                .when(pageProcessingService).processPage(PAGE_1_URI);
+        doNothing().when(pageProcessingService).processPage(PAGE_2_URI);
 
         // When
         webCrawler.crawl(START_URI);
 
         // Then
-        verify(frontierQueue).enqueue(normalizedStartUri);
-        verify(frontierQueue).enqueue(uriWithoutTrailingSlash); // Normalized URI should be enqueued
-        verify(frontierQueue, never()).enqueue(uriWithTrailingSlash); // Original URI should not be enqueued
-        verify(pageFetcher).fetch(normalizedStartUri);
-        verify(pageFetcher).fetch(uriWithoutTrailingSlash);
-        verify(pageFetcher, never()).fetch(uriWithTrailingSlash);
+        verify(pageProcessingService).processPage(PAGE_1_URI);
+        verify(pageProcessingService).processPage(PAGE_2_URI);
     }
 
     @Test
-    void shouldRespectVisitedRepository() {
-        URI normalizedStartUri = START_URI.resolve("/");
-
-        // Given - URI is already visited according to repository
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(false); // Already visited
-
-        // When
-        webCrawler.crawl(START_URI);
-
-        // Then
-        verify(visitedRepository).markVisited(normalizedStartUri);
-        verify(pageFetcher, never()).fetch(any()); // Should not fetch if already visited
-        verify(crawlObserver, never()).onPageCrawled(any(), any());
-        verify(crawlObserver, never()).onCrawlFailed(any(), any(), any());
-    }
-
-    @Test
-    void shouldHandleEmptyLinkExtractionGracefully() {
-        URI normalizedStartUri = START_URI.resolve("/");
-
+    void shouldHandleNullStartUri() {
         // Given
-        String htmlContent = "<html><body>No links here</body></html>";
-        PageData successPageData = new PageData(htmlContent, PageData.Status.SUCCESS);
-        Set<URI> emptyLinks = Set.of();
-
-        when(visitedRepository.markVisited(normalizedStartUri)).thenReturn(true);
-        when(pageFetcher.fetch(normalizedStartUri)).thenReturn(successPageData);
-        when(linkExtractor.extractLinks(htmlContent, normalizedStartUri)).thenReturn(emptyLinks);
+        when(crawlStateService.getNextUri()).thenReturn(null);
+        when(crawlStateService.isFrontierEmpty()).thenReturn(true);
 
         // When
-        webCrawler.crawl(START_URI);
+        webCrawler.crawl(null);
 
         // Then
-        verify(visitedRepository).markVisited(normalizedStartUri);
-        verify(pageFetcher).fetch(normalizedStartUri);
-        verify(linkExtractor).extractLinks(htmlContent, normalizedStartUri);
-        verify(crawlObserver).onPageCrawled(normalizedStartUri, emptyLinks);
+        verify(crawlStateService).tryAddToFrontier(null);
+    }
 
-        // Verify no additional URIs are enqueued
-        verify(frontierQueue, times(1)).enqueue(any()); // Only the start URI
+    @Test
+    void shouldCreateMultipleIndependentInstances() {
+        // Given
+        PageProcessingService mockPageProcessingService1 = mock(PageProcessingService.class);
+        PageProcessingService mockPageProcessingService2 = mock(PageProcessingService.class);
+        CrawlStateService mockCrawlStateService1 = mock(CrawlStateService.class);
+        CrawlStateService mockCrawlStateService2 = mock(CrawlStateService.class);
+
+        // When
+        WebCrawlerUseCase crawler1 = new WebCrawlerUseCase(
+                mockPageProcessingService1, mockCrawlStateService1, 5);
+        WebCrawlerUseCase crawler2 = new WebCrawlerUseCase(
+                mockPageProcessingService2, mockCrawlStateService2, 10);
+
+        // Then
+        assertNotNull(crawler1);
+        assertNotNull(crawler2);
+        assertNotSame(crawler1, crawler2);
     }
 }

@@ -1,35 +1,23 @@
 package com.monzo.crawler.infrastructure;
 
-import com.monzo.crawler.infrastructure.ConsoleCrawlObserver;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 
 import java.net.URI;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class ConsoleCrawlObserverTest {
 
-    private ConsoleCrawlObserver observer;
-    private Logger mockLogger;
-
-    @BeforeEach
-    void setUp() {
-        observer = new ConsoleCrawlObserver();
-        mockLogger = mock(Logger.class);
-    }
+    private final Logger mockLogger = mock(Logger.class);
 
     @Test
     void shouldLogPageCrawledWithNewLinks() {
-        // Given
         URI pageUri = URI.create("https://example.com/page1");
         Set<URI> links = Set.of(
                 URI.create("https://example.com/page2"),
@@ -42,10 +30,8 @@ class ConsoleCrawlObserverTest {
 
             ConsoleCrawlObserver observerWithMockedLogger = new ConsoleCrawlObserver();
 
-            // When
             observerWithMockedLogger.onPageCrawled(pageUri, links);
 
-            // Then
             ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
             verify(mockLogger).info(logCaptor.capture());
 
@@ -61,7 +47,6 @@ class ConsoleCrawlObserverTest {
 
     @Test
     void shouldLogPageCrawledWithAllAlreadySeenLinks() {
-        // Given
         URI pageUri1 = URI.create("https://example.com/page1");
         URI pageUri2 = URI.create("https://example.com/page2");
         Set<URI> links = Set.of(
@@ -75,14 +60,11 @@ class ConsoleCrawlObserverTest {
 
             ConsoleCrawlObserver observerWithMockedLogger = new ConsoleCrawlObserver();
 
-            // First crawl to populate seen links
             observerWithMockedLogger.onPageCrawled(pageUri1, links);
-            reset(mockLogger); // Reset to clear first call
+            reset(mockLogger);
 
-            // When - crawl again with same links
             observerWithMockedLogger.onPageCrawled(pageUri2, links);
 
-            // Then
             ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
             verify(mockLogger).info(logCaptor.capture());
 
@@ -96,7 +78,6 @@ class ConsoleCrawlObserverTest {
 
     @Test
     void shouldLogPageCrawledWithMixOfNewAndSeenLinks() {
-        // Given
         URI pageUri1 = URI.create("https://example.com/page1");
         URI pageUri2 = URI.create("https://example.com/page2");
 
@@ -106,8 +87,8 @@ class ConsoleCrawlObserverTest {
         );
 
         Set<URI> secondLinks = Set.of(
-                URI.create("https://example.com/page3"), // Already seen
-                URI.create("https://example.com/page5")  // New
+                URI.create("https://example.com/page3"),
+                URI.create("https://example.com/page5")
         );
 
         try (MockedStatic<org.slf4j.LoggerFactory> loggerFactory = mockStatic(org.slf4j.LoggerFactory.class)) {
@@ -116,14 +97,11 @@ class ConsoleCrawlObserverTest {
 
             ConsoleCrawlObserver observerWithMockedLogger = new ConsoleCrawlObserver();
 
-            // First crawl
             observerWithMockedLogger.onPageCrawled(pageUri1, firstLinks);
             reset(mockLogger);
 
-            // When - second crawl with mix of new and seen links
             observerWithMockedLogger.onPageCrawled(pageUri2, secondLinks);
 
-            // Then
             ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
             verify(mockLogger).info(logCaptor.capture());
 
@@ -138,7 +116,6 @@ class ConsoleCrawlObserverTest {
 
     @Test
     void shouldLogPageCrawledWithNoLinks() {
-        // Given
         URI pageUri = URI.create("https://example.com/page1");
         Set<URI> emptyLinks = Set.of();
 
@@ -148,10 +125,8 @@ class ConsoleCrawlObserverTest {
 
             ConsoleCrawlObserver observerWithMockedLogger = new ConsoleCrawlObserver();
 
-            // When
             observerWithMockedLogger.onPageCrawled(pageUri, emptyLinks);
 
-            // Then
             ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
             verify(mockLogger).info(logCaptor.capture());
 
@@ -164,7 +139,6 @@ class ConsoleCrawlObserverTest {
 
     @Test
     void shouldSortLinksAlphabetically() {
-        // Given
         URI pageUri = URI.create("https://example.com/page1");
         Set<URI> links = Set.of(
                 URI.create("https://example.com/zebra"),
@@ -178,16 +152,13 @@ class ConsoleCrawlObserverTest {
 
             ConsoleCrawlObserver observerWithMockedLogger = new ConsoleCrawlObserver();
 
-            // When
             observerWithMockedLogger.onPageCrawled(pageUri, links);
 
-            // Then
             ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
             verify(mockLogger).info(logCaptor.capture());
 
             String logMessage = logCaptor.getValue();
 
-            // Verify alphabetical ordering
             int alphaIndex = logMessage.indexOf("-> https://example.com/alpha");
             int betaIndex = logMessage.indexOf("-> https://example.com/beta");
             int zebraIndex = logMessage.indexOf("-> https://example.com/zebra");
@@ -199,7 +170,6 @@ class ConsoleCrawlObserverTest {
 
     @Test
     void shouldLogCrawlFailedWithError() {
-        // Given
         URI pageUri = URI.create("https://example.com/failed-page");
         String reason = "CONNECTION_TIMEOUT";
         RuntimeException error = new RuntimeException("Connection timed out");
@@ -210,10 +180,8 @@ class ConsoleCrawlObserverTest {
 
             ConsoleCrawlObserver observerWithMockedLogger = new ConsoleCrawlObserver();
 
-            // When
             observerWithMockedLogger.onCrawlFailed(pageUri, reason, error);
 
-            // Then
             verify(mockLogger).warn("Failed to crawl {}: Reason: {}. Error: {}",
                     pageUri, reason, error.getMessage());
         }
@@ -221,7 +189,6 @@ class ConsoleCrawlObserverTest {
 
     @Test
     void shouldLogCrawlFailedWithoutError() {
-        // Given
         URI pageUri = URI.create("https://example.com/failed-page");
         String reason = "NOT_FOUND";
 
@@ -231,17 +198,14 @@ class ConsoleCrawlObserverTest {
 
             ConsoleCrawlObserver observerWithMockedLogger = new ConsoleCrawlObserver();
 
-            // When
             observerWithMockedLogger.onCrawlFailed(pageUri, reason, null);
 
-            // Then
             verify(mockLogger).warn("Failed to crawl {}: Reason: {}", pageUri, reason);
         }
     }
 
     @Test
     void shouldMaintainStateAcrossMultipleCrawls() {
-        // Given
         URI pageUri1 = URI.create("https://example.com/page1");
         URI pageUri2 = URI.create("https://example.com/page2");
         URI pageUri3 = URI.create("https://example.com/page3");
@@ -256,12 +220,10 @@ class ConsoleCrawlObserverTest {
 
             ConsoleCrawlObserver observerWithMockedLogger = new ConsoleCrawlObserver();
 
-            // When
             observerWithMockedLogger.onPageCrawled(pageUri1, links1); // link1 is new
             observerWithMockedLogger.onPageCrawled(pageUri2, links2); // link1 seen, link2 new
             observerWithMockedLogger.onPageCrawled(pageUri3, links3); // link2 seen, link3 new
 
-            // Then
             ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
             verify(mockLogger, times(3)).info(logCaptor.capture());
 

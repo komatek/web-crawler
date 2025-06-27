@@ -1,5 +1,6 @@
 package com.monzo.crawler.infrastructure;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.monzo.crawler.domain.port.out.CrawlObserver;
 import java.net.URI;
 import java.util.Set;
@@ -17,7 +18,7 @@ public class ConsoleCrawlObserver implements CrawlObserver {
         this(LoggerFactory.getLogger(ConsoleCrawlObserver.class));
     }
 
-    // Package-private constructor for testing
+    @VisibleForTesting
     ConsoleCrawlObserver(Logger logger) {
         this.logger = logger;
     }

@@ -1,7 +1,8 @@
 package com.monzo.crawler;
 
 import com.monzo.crawler.application.WebCrawler;
-import com.monzo.crawler.application.WebCrawlerUseCase;
+import com.monzo.crawler.config.WebCrawlerFactory;
+import com.monzo.crawler.domain.port.out.*;
 import com.monzo.crawler.infrastructure.*;
 import com.monzo.crawler.infrastructure.config.ConfigurationLoader;
 import io.lettuce.core.RedisClient;
@@ -60,32 +61,35 @@ public class CrawlerApplication {
                 return;
             }
 
-            var visitedRepository = new RedisVisitedRepository(redis);
-            var frontierQueue = new RedisFrontierQueue(redis);
-
-            // Create components with configuration
+            // Create infrastructure components
             Duration httpTimeout = Duration.ofSeconds(config.getHttpTimeoutSeconds());
-            var pageFetcher = new HttpClientPageFetcher(httpTimeout);
-            var linkExtractor = new JsoupLinkExtractor();
-            var crawlObserver = new ConsoleCrawlObserver();
-
             int maxConcurrentRequests = config.getMaxConcurrentRequests();
 
-            WebCrawler webCrawler = new WebCrawlerUseCase(
+            PageFetcher pageFetcher = new HttpClientPageFetcher(httpTimeout);
+            LinkExtractor linkExtractor = new JsoupLinkExtractor();
+            CrawlObserver crawlObserver = new ConsoleCrawlObserver();
+            FrontierQueue frontierQueue = new RedisFrontierQueue(redis);
+            VisitedRepository visitedRepository = new RedisVisitedRepository(redis);
+
+            // Create factory with infrastructure dependencies
+            WebCrawlerFactory factory = new WebCrawlerFactory(
                     pageFetcher,
                     linkExtractor,
                     crawlObserver,
                     frontierQueue,
                     visitedRepository,
-                    startUri.getHost(),
                     maxConcurrentRequests
             );
+
+            // Create crawler configured for the specific domain
+            WebCrawler webCrawler = factory.createForUri(startUri);
 
             logger.info("Starting crawl at: {}", startUri);
             logger.info("Restricting to host: {}", startUri.getHost());
             logger.info("Max concurrent requests: {}", maxConcurrentRequests);
             logger.info("HTTP timeout: {} seconds", config.getHttpTimeoutSeconds());
 
+            // Start crawling
             webCrawler.crawl(startUri);
 
             logger.info("Crawl finished.");
