@@ -1,282 +1,193 @@
 # Web Crawler
 
-A high-performance, concurrent web crawler built with Java 21 using hexagonal architecture principles. The crawler is designed to efficiently crawl websites while respecting domain boundaries and avoiding duplicate processing.
-
-## Features
-
-- **Concurrent Processing**: Utilizes Java 21 virtual threads for high-performance concurrent crawling
-- **Domain Restriction**: Crawls only within the specified domain to respect boundaries
-- **Duplicate Detection**: Redis-backed visited URL tracking prevents processing the same page twice
-- **Rate Limiting**: Configurable concurrent request limiting to be respectful to target servers
-- **Robust Error Handling**: Comprehensive error handling for network issues, timeouts, and malformed content
-- **Link Filtering**: Automatically filters out static files and non-HTTP(S) links
-- **URI Normalization**: Normalizes URIs to prevent duplicate processing of equivalent URLs
-- **Comprehensive Logging**: Detailed logging with configurable levels for monitoring and debugging
-
-## Architecture
-
-The project follows hexagonal architecture (ports and adapters) principles:
-
-```
-├── domain/
-│   ├── model/          # Core domain models (PageData)
-│   └── port/out/       # Output ports (interfaces)
-├── application/        # Use cases and business logic
-└── infrastructure/     # Adapters and external integrations
-```
-
-### Core Components
-
-- **WebCrawler**: Main orchestrator managing the crawling process
-- **PageFetcher**: HTTP client for fetching web pages
-- **LinkExtractor**: Extracts and validates links from HTML content
-- **FrontierQueue**: Redis-backed queue for managing URLs to crawl
-- **VisitedRepository**: Redis-backed storage for tracking visited URLs
-- **CrawlObserver**: Observer for crawl events and results
-
-## Prerequisites
-
-- **Java 21** or higher
-- **Docker** (for Redis and integration tests)
-- **Gradle 8.5+**
+A concurrent web crawler built with Java that crawls websites within domain boundaries, using Redis for state management and hexagonal architecture for clean code organization.
 
 ## Quick Start
 
-### 1. Clone the Repository
+### Prerequisites
+- Java 21+
+- Docker (for Redis)
 
+### Running the Crawler
+
+1. **Start Redis:**
 ```bash
-git clone <repository-url>
-cd web-crawler
+docker run --name redis -p 6379:6379 redis
 ```
 
-### 2. Start Redis
-
+2. **Run the crawler:**
 ```bash
-docker run -d --name redis -p 6379:6379 redis:7-alpine
-```
-
-### 3. Build the Project
-
-```bash
-./gradlew build
-```
-
-### 4. Run the Crawler
-
-```bash
-# Using Gradle
-./gradlew run --args="https://example.com"
-
-# Using the JAR file
-java -jar build/libs/web-crawler-1.0.0.jar https://example.com
-```
-
-## Configuration
-
-### Redis Configuration
-
-The crawler connects to Redis at `redis://localhost:6379` by default. You can override this by:
-
-1. **Environment Variable**:
-   ```bash
-   export CRAWLER_REDIS_URL=redis://your-redis-host:6379
-   ```
-
-2. **System Property**:
-   ```bash
-   java -Dcrawler.redis.url=redis://your-redis-host:6379 -jar crawler.jar https://example.com
-   ```
-
-3. **Application Properties**:
-   ```properties
-   crawler.redis.url=redis://your-redis-host:6379
-   ```
-
-### Crawler Settings
-
-Key configuration options in the `CrawlerApplication.java`:
-
-- **Max Concurrent Requests**: Currently set to 90 concurrent requests
-- **HTTP Timeout**: 5 seconds for HTTP connections
-- **Rate Limiting**: Managed via Semaphore to control concurrent requests
-
-## Usage Examples
-
-### Basic Crawling
-
-```bash
-# Crawl a website starting from the homepage
 ./gradlew run --args="https://monzo.com"
 ```
 
-### With Custom Redis
-
+3. **For subsequent runs, flush Redis first:**
 ```bash
-# Using custom Redis instance
-CRAWLER_REDIS_URL=redis://custom-redis:6379 ./gradlew run --args="https://example.com"
+# Connect to Redis and flush
+docker exec -it redis redis-cli FLUSHALL
 ```
 
-### Building and Running JAR
+**Note**: The crawler maintains state in Redis, so re-running without flushing will skip already crawled URLs.
+
+### Example Output
+```
+16:30:45.123 [main] INFO  CrawlerApplication - Starting crawl at: https://monzo.com
+16:30:45.124 [main] INFO  CrawlerApplication - Restricting to host: monzo.com
+
+--------------------------------------------------
+Crawled Page: https://monzo.com/
+Found 8 total links (8 new):
+  -> https://monzo.com/about
+  -> https://monzo.com/business
+  -> https://monzo.com/careers
+  -> https://monzo.com/features
+--------------------------------------------------
+```
+
+## Architecture
+
+### Why Hexagonal Architecture?
+
+**Benefits for this project:**
+- **Testability**: Core logic isolated from Redis/HTTP dependencies
+- **Flexibility**: Easy to swap Redis for database or HTTP client for different implementation
+- **Clean boundaries**: Clear separation between business logic and infrastructure
+
+**Structure:**
+```
+Application Layer    → WebCrawlerUseCase (orchestrates crawling)
+Domain Layer        → CrawlStateService, PageProcessingService (business logic)
+Infrastructure      → Redis adapters, HTTP client, Jsoup parser
+```
+
+### Why Redis?
+
+**Chosen for simplicity and performance:**
+- ✅ **Fast setup**: Single dependency for both queue and visited URL tracking
+- ✅ **High performance**: In-memory operations, perfect for this use case
+- ✅ **Atomic operations**: Thread-safe SADD/LPUSH operations
+- ✅ **Persistence**: Survives application restarts
+
+**Trade-offs vs Traditional Database:**
+- ❌ **Memory usage**: All URLs stored in memory
+- ❌ **Limited queries**: Can't do complex analysis of crawl data
+- ❌ **Durability**: Less robust than ACID database
+- ✅ **Simplicity**: No schema design, migrations, or complex setup needed
+
+## Key Features
+
+- **Concurrent crawling** with configurable limits (default: 80 concurrent requests)
+- **Domain restriction** - only crawls within the starting domain
+- **Duplicate prevention** - tracks visited URLs to avoid loops
+- **Content filtering** - only processes HTML pages, skips images/PDFs
+- **Robust error handling** - continues crawling despite individual page failures
+- **Real-time progress** - shows crawled pages and discovered links
+
+## How It Works
+
+1. **Start with seed URL**: Adds initial URL to frontier queue
+2. **Process queue**: Continuously dequeues URLs to crawl
+3. **Fetch & parse**: Downloads HTML and extracts links using Jsoup
+4. **Filter & normalize**: Removes external domains, normalizes URLs
+5. **Track state**: Marks URLs as visited, adds new URLs to queue
+6. **Repeat**: Continues until no more URLs to process
+
+## Configuration
+
+Configure via `src/main/resources/application.properties`:
+
+```properties
+# Redis connection
+crawler.redis.url=redis://localhost:6379
+
+# Performance tuning  
+crawler.max.concurrent.requests=80
+```
+
+Override with environment variables:
+```bash
+export CRAWLER_MAX_CONCURRENT_REQUESTS=50
+./gradlew run --args="https://monzo.com"
+```
+
+## Testing
+
+The project includes comprehensive tests:
 
 ```bash
-# Build the fat JAR
-./gradlew jar
+# Run all tests (requires Docker for Testcontainers)
+./gradlew test
 
-# Run the JAR
-java -jar build/libs/web-crawler-1.0.0.jar https://example.com
+# Run specific test classes
+./gradlew test --tests "*IntegrationTest"
 ```
+
+**Test strategy:**
+- **Unit tests**: Mock external dependencies, test business logic
+- **Integration tests**: Real Redis + WireMock for HTTP
+- **Component tests**: End-to-end crawling simulation
+
+## Production Considerations
+
+This implementation prioritizes **simplicity for the coding challenge**. For production use:
+
+### Current Limitations
+- **No robots.txt compliance** - doesn't respect crawling rules
+- **Memory-bound storage** - Redis holds all URLs in memory
+- **Single domain only** - can't crawl across multiple sites
+- **No JavaScript rendering** - only parses static HTML
+- **Basic rate limiting** - simple semaphore approach
+
+### Production Improvements Needed
+1. **Database migration**: PostgreSQL for durability and complex queries
+2. **Robots.txt support**: Respect site crawling policies
+3. **Enhanced error handling**: Exponential backoff, circuit breakers
+4. **Monitoring**: Metrics, health checks, performance dashboards
+5. **Advanced features**: JavaScript rendering, sitemap parsing, content deduplication
+
+## Design Decisions
+
+### URI Normalization
+```java
+// Handles URL variations:
+https://monzo.com/page/ → https://monzo.com/page  (remove trailing slash)
+https://monzo.com → https://monzo.com/             (add root path)
+https://monzo.com/page#section → https://monzo.com/page (remove fragments)
+```
+
+### Concurrency Model
+- **Virtual threads** (Java 21) for lightweight concurrency
+- **Semaphore rate limiting** to control HTTP request load
+- **Phaser coordination** for graceful shutdown
+
+### Error Handling
+- Network failures → logged and skipped, crawl continues
+- HTTP errors (404, 500) → categorized and reported
+- Parse errors → isolated to prevent crawler crash
+
+## Why This Architecture?
+
+**For a coding challenge**, this demonstrates:
+- ✅ **Clean architecture principles** with clear separation of concerns
+- ✅ **Proper abstraction** through ports and adapters pattern
+- ✅ **Comprehensive testing** with different test strategies
+- ✅ **Production awareness** while keeping scope manageable
+- ✅ **Modern Java features** like virtual threads and records
+
+The goal was to show **engineering maturity** while **keeping complexity reasonable** for a time-boxed challenge.
 
 ## Development
 
 ### Project Structure
-
 ```
-src/
-├── main/java/com/monzo/crawler/
-│   ├── application/           # Use cases
-│   │   ├── WebCrawler.java
-│       └── WebCrawlerUseCase.java
-│   ├── domain/
-│   │   ├── model/            # Domain models
-│   │   │   └── PageData.java
-│   │   └── port/out/         # Output ports
-│   │       ├── PageFetcher.java
-│   │       ├── LinkExtractor.java
-│   │       ├── FrontierQueue.java
-│   │       ├── VisitedRepository.java
-│   │       └── CrawlObserver.java
-│   ├── infrastructure/       # Adapters
-│   │   ├── config/         # Configuration classes
-│   │   │   └── ConfigurationLoader.java
-│   │   ├── HttpClientPageFetcher.java
-│   │   ├── JsoupLinkExtractor.java
-│   │   ├── RedisFrontierQueue.java
-│   │   ├── RedisVisitedRepository.java
-│   │   └── ConsoleCrawlObserver.java
-│   └── CrawlerApplication.java
-├── test/java/                # Tests
-└── resources/
-    ├── application.properties
-    └── logback.xml
+src/main/java/com/monzo/crawler/
+├── application/     # Use cases (WebCrawlerUseCase)
+├── config/         # Factories and configuration  
+├── domain/         # Business logic (services, models)
+└── infrastructure/ # External adapters (Redis, HTTP, Jsoup)
 ```
 
-### Running Tests
-
-```bash
-# Run all tests
-./gradlew test
-
-# Run only unit tests
-./gradlew unitTest
-
-# Run only integration tests
-./gradlew integrationTest
-```
-
-### Integration Tests
-
-The project includes comprehensive integration tests using Testcontainers:
-
-- **Redis Integration**: Tests Redis-backed components with real Redis instances
-- **Concurrency Testing**: Validates thread-safety under concurrent load
-- **Edge Case Coverage**: Tests URI handling, encoding, and error conditions
-
-## Key Design Decisions
-
-### Concurrency Model
-
-- **Virtual Threads**: Uses Java 21 virtual threads for lightweight concurrency
-- **Phaser Synchronization**: Coordinates crawling completion across concurrent tasks
-- **Rate Limiting**: Semaphore-based rate limiting prevents overwhelming target servers
-
-### Data Storage
-
-- **Redis Sets**: Uses Redis sets for O(1) visited URL lookups
-- **Redis Lists**: Uses Redis lists for FIFO queue operations
-- **Atomic Operations**: Leverages Redis atomic operations for thread-safe duplicate detection
-
-### URL Processing
-
-- **Normalization**: Standardizes URLs to prevent duplicate processing
-- **Domain Filtering**: Restricts crawling to the specified domain
-- **Static File Filtering**: Automatically excludes common static file types
-
-## Monitoring and Observability
-
-### Logging
-
-The crawler provides detailed logging at multiple levels:
-
-- **INFO**: High-level crawl progress and results
-- **DEBUG**: Detailed processing information
-- **WARN**: Non-fatal issues and retries
-- **ERROR**: Fatal errors and exceptions
-
-### Console Output
-
-Real-time crawl progress is displayed with:
-- Pages successfully crawled
-- Links discovered (new vs. already seen)
-- Failed crawl attempts with reasons
-
-## Performance Characteristics
-
-- **Memory Efficient**: Uses Redis for state storage, minimal memory footprint
-- **Scalable**: Horizontal scaling possible with shared Redis instance
-- **Respectful**: Built-in rate limiting and politeness policies
-- **Fast**: Virtual threads enable high concurrency with low overhead
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Redis Connection Failed**
-   ```bash
-   # Check if Redis is running
-   docker ps | grep redis
-   
-   # Start Redis if not running
-   docker run -d --name redis -p 6379:6379 redis:7-alpine
-   ```
-
-2. **Out of Memory**
-   ```bash
-   # Increase JVM heap size
-   java -Xmx2g -jar crawler.jar https://example.com
-   ```
-
-3. **Too Many Open Files**
-   ```bash
-   # Increase file descriptor limit
-   ulimit -n 65536
-   ```
-
-### Debug Mode
-
-Enable debug logging:
-
-```bash
-# Via system property
-java -Dlogging.level.com.monzo.crawler=DEBUG -jar crawler.jar https://example.com
-
-# Via logback configuration
-# Edit src/main/resources/logback.xml and set level to DEBUG
-```
-
-### Code Style
-
-- Follow Java naming conventions
-- Use meaningful variable and method names
-- Add comprehensive tests for new features
-- Update documentation for API changes
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- **Jsoup**: HTML parsing and link extraction
-- **Lettuce**: Redis client for Java
-- **Testcontainers**: Integration testing with Docker containers
-- **SLF4J/Logback**: Logging framework
+### Key Classes
+- `WebCrawlerUseCase`: Orchestrates the crawling process
+- `CrawlStateService`: Manages visited URLs and frontier queue
+- `PageProcessingService`: Fetches pages and extracts links
+- `UriProcessingService`: Handles URL normalization and validation
