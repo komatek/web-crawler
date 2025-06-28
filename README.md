@@ -20,6 +20,12 @@ docker run --name redis -p 6379:6379 redis
 ./gradlew run --args="https://monzo.com"
 ```
 
+Alternatively, you can build the JAR and run it directly:
+
+```bash
+java -jar build/libs/web_crawler-1.0.0.jar https://monzo.com
+```
+
 3. **For subsequent runs, flush Redis first:**
 ```bash
 # Connect to Redis and flush
@@ -245,6 +251,12 @@ This implementation is designed as a **runnable local application** for the codi
 ```bash
 # Direct execution
 ./gradlew run --args="https://monzo.com"
+```
+
+Alternatively, you can build the JAR and run it directly:
+
+```bash
+java -jar build/libs/web_crawler-1.0.0.jar https://monzo.com
 ```
 
 **Production (Web Service):**
