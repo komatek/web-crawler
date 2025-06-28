@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - WebCrawlerComponentTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>WebCrawlerComponentTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.monzo.crawler.component.html">com.monzo.crawler.component</a> &gt; WebCrawlerComponentTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">3</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">1.434s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">testConcurrentCrawling()</td>
+<td class="success">0.903s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testHandle404Errors()</td>
+<td class="success">0.343s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testHappyPathCrawling()</td>
+<td class="success">0.188s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>12:20:50.750 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:57321
+12:20:50.997 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Shared Redis connection created successfully
+12:20:50.998 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Redis container started on port: 32879
+12:20:50.998 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - WireMock server started once for all tests at: http://localhost:57321
+12:20:51.520 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Crawled pages: [http://localhost:57321/about, http://localhost:57321/blog/post1, http://localhost:57321/, http://localhost:57321/contact, http://localhost:57321/products/widget1, http://localhost:57321/products/widget2, http://localhost:57321/products, http://localhost:57321/team, http://localhost:57321/blog]
+12:20:51.521 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Failed pages: []
+12:20:51.528 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Test completed successfully!
+12:20:51.529 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Total pages crawled: 9
+12:20:51.529 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Total links found: 19
+12:20:51.529 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Failed pages: 0
+12:20:51.572 [virtual-101] INFO  c.m.c.c.WebCrawlerComponentTest - Page http://localhost:57321/ crawled on thread: VirtualThread-101 (ID: 101, Virtual: true, Seq: 1)
+12:20:52.192 [virtual-105] INFO  c.m.c.c.WebCrawlerComponentTest - Page http://localhost:57321/slow1 crawled on thread: VirtualThread-105 (ID: 105, Virtual: true, Seq: 2)
+12:20:52.197 [virtual-106] INFO  c.m.c.c.WebCrawlerComponentTest - Page http://localhost:57321/slow2 crawled on thread: VirtualThread-106 (ID: 106, Virtual: true, Seq: 3)
+12:20:52.207 [virtual-108] INFO  c.m.c.c.WebCrawlerComponentTest - Page http://localhost:57321/slow3 crawled on thread: VirtualThread-108 (ID: 108, Virtual: true, Seq: 4)
+12:20:52.424 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - === CONCURRENCY TEST RESULTS ===
+12:20:52.425 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Total crawling time: 775 ms
+12:20:52.425 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Active thread identifiers: [VirtualThread-108, VirtualThread-105, VirtualThread-106, VirtualThread-101]
+12:20:52.426 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Unique thread IDs count: 4
+12:20:52.426 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Max concurrent requests: 3
+12:20:52.426 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - =================================
+12:20:52.432 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - ✅ CONCURRENCY VERIFIED: Multiple threads, high concurrency, fast execution
+12:20:52.459 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - WireMock server stopped and Redis resources cleaned up
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.13</a> at Jun 28, 2025, 12:21:02 PM</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - UriProcessingServiceTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>UriProcessingServiceTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.monzo.crawler.domain.service.html">com.monzo.crawler.domain.service</a> &gt; UriProcessingServiceTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">37</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.017s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Method name</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">constructorShouldThrowNullPointerExceptionWhenAllowedDomainIsNull()</td>
+<td class="success">constructorShouldThrowNullPointerExceptionWhenAllowedDomainIsNull()</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">isSameDomainShouldReturnFalseWhenHostIsNull()</td>
+<td class="success">isSameDomainShouldReturnFalseWhenHostIsNull()</td>
+<td class="success">0.003s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] https://example.com/page, true, exact domain match</td>
+<td class="success">isSameDomainShouldValidateDomainMatching(String, boolean, String)[1]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] https://EXAMPLE.COM/page, true, case insensitive match</td>
+<td class="success">isSameDomainShouldValidateDomainMatching(String, boolean, String)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] http://example.com/page, true, different scheme same domain</td>
+<td class="success">isSameDomainShouldValidateDomainMatching(String, boolean, String)[3]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] https://example.com:8080/page, true, different port same domain</td>
+<td class="success">isSameDomainShouldValidateDomainMatching(String, boolean, String)[4]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] https://other.com/page, false, different domain</td>
+<td class="success">isSameDomainShouldValidateDomainMatching(String, boolean, String)[5]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[6] https://sub.example.com/page, false, subdomain</td>
+<td class="success">isSameDomainShouldValidateDomainMatching(String, boolean, String)[6]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[7] https://com/page, false, superdomain</td>
+<td class="success">isSameDomainShouldValidateDomainMatching(String, boolean, String)[7]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">isValidForCrawlingShouldReturnFalseWhenHostIsNull()</td>
+<td class="success">isValidForCrawlingShouldReturnFalseWhenHostIsNull()</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">isValidForCrawlingShouldReturnFalseWhenUriIsNull()</td>
+<td class="success">isValidForCrawlingShouldReturnFalseWhenUriIsNull()</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] https://example.com/page, true, valid URI same domain</td>
+<td class="success">isValidForCrawlingShouldValidateUriForCrawling(String, boolean, String)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] https://EXAMPLE.COM/page, true, valid URI case insensitive</td>
+<td class="success">isValidForCrawlingShouldValidateUriForCrawling(String, boolean, String)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] http://example.com/page, true, valid URI different scheme</td>
+<td class="success">isValidForCrawlingShouldValidateUriForCrawling(String, boolean, String)[3]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] https://example.com:8080/page, true, valid URI different port</td>
+<td class="success">isValidForCrawlingShouldValidateUriForCrawling(String, boolean, String)[4]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] https://other.com/page, false, valid URI different domain</td>
+<td class="success">isValidForCrawlingShouldValidateUriForCrawling(String, boolean, String)[5]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[6] https://sub.example.com/page, false, valid URI subdomain</td>
+<td class="success">isValidForCrawlingShouldValidateUriForCrawling(String, boolean, String)[6]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[7] https://com/page, false, valid URI superdomain</td>
+<td class="success">isValidForCrawlingShouldValidateUriForCrawling(String, boolean, String)[7]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">normalizeUriShouldHandleComplexUri()</td>
+<td class="success">normalizeUriShouldHandleComplexUri()</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] https://example.com, /, https://example.com/, should add root path when path is null</td>
+<td class="success">normalizeUriShouldNormalizePaths(String, String, String, String)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] https://example.com/, /, https://example.com/, should keep single slash when path is root with trailing slash</td>
+<td class="success">normalizeUriShouldNormalizePaths(String, String, String, String)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] https://example.com/page/, /page, https://example.com/page, should remove trailing slash when path ends with slash</td>
+<td class="success">normalizeUriShouldNormalizePaths(String, String, String, String)[3]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] https://example.com/page, /page, https://example.com/page, should preserve path when path does not end with slash</td>
+<td class="success">normalizeUriShouldNormalizePaths(String, String, String, String)[4]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] https://example.com/level1/level2/level3/, /level1/level2/level3, https://example.com/level1/level2/level3, should handle nested paths</td>
+<td class="success">normalizeUriShouldNormalizePaths(String, String, String, String)[5]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[6] https://example.com//double//slash//path/, //double//slash//path, https://example.com//double//slash//path, should handle paths with multiple slashes</td>
+<td class="success">normalizeUriShouldNormalizePaths(String, String, String, String)[6]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] http://example.com/page, http, null, example.com, -1, null, should preserve scheme</td>
+<td class="success">normalizeUriShouldPreserveUriComponents(String, String, String, String, int, String, String)[1]</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] https://example.com:8080/page, https, null, example.com, 8080, null, should preserve port</td>
+<td class="success">normalizeUriShouldPreserveUriComponents(String, String, String, String, int, String, String)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] https://user:pass@example.com/page, https, user:pass, example.com, -1, null, should preserve userInfo</td>
+<td class="success">normalizeUriShouldPreserveUriComponents(String, String, String, String, int, String, String)[3]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] https://example.com/page?param=value, https, null, example.com, -1, param=value, should preserve query</td>
+<td class="success">normalizeUriShouldPreserveUriComponents(String, String, String, String, int, String, String)[4]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] https://example.com/page?, https, null, example.com, -1, , should preserve empty query</td>
+<td class="success">normalizeUriShouldPreserveUriComponents(String, String, String, String, int, String, String)[5]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] https://example.com/page#section1</td>
+<td class="success">normalizeUriShouldRemoveFragment(String)[1]</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] https://example.com/page#</td>
+<td class="success">normalizeUriShouldRemoveFragment(String)[2]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] https://example.com/page?param=value#fragment</td>
+<td class="success">normalizeUriShouldRemoveFragment(String)[3]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] https://example.com/#section</td>
+<td class="success">normalizeUriShouldRemoveFragment(String)[4]</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">normalizeUriShouldReturnOriginalUriWhenNormalizationFails()</td>
+<td class="success">normalizeUriShouldReturnOriginalUriWhenNormalizationFails()</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">normalizeUriShouldReturnOriginalUriWhenNormalizationFailsAlternative()</td>
+<td class="success">normalizeUriShouldReturnOriginalUriWhenNormalizationFailsAlternative()</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">normalizeUriShouldReturnOriginalUriWhenNormalizationFailsReliable()</td>
+<td class="success">normalizeUriShouldReturnOriginalUriWhenNormalizationFailsReliable()</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.13</a> at Jun 28, 2025, 12:21:02 PM</p>
+</div>
+</div>
+</body>
+</html>
