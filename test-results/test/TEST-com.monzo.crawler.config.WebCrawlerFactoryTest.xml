@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.config.WebCrawlerFactoryTest" tests="27" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:20:54.694Z" hostname="Sergi-Arias.local" time="0.02">
+  <properties/>
+  <testcase name="shouldRejectNullLinkExtractor()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.002"/>
+  <testcase name="shouldRejectNullCrawlObserver()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldHandleHttpAndHttps()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldRejectNullPageFetcher()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldRejectUriWithNoHost()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldRejectMalformedUri()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldRejectUriWithNullHost()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldHandleSpecialCharactersInDomain()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldHandleUriWithFragment()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldRejectNullFrontierQueue()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldRejectNullVisitedRepository()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldHandleIpAddressUri()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldHandleUriWithDefaultPorts()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldRejectAllNullDependencies()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldCreateWebCrawlerForValidUri()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldCreateIndependentCrawlerInstances()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldHandleUriWithUserInfo()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldHandleUriWithQueryParameters()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldRejectNullUri()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldRejectUriWithEmptyHost()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldHandleDifferentDomains()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldHandleLocalhostUri()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldCreateFactoryWithValidDependencies()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldHandleUriWithPath()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <testcase name="shouldHandleUriWithPort()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldCreateFactoryWithSameDependencyInstances()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.001"/>
+  <testcase name="shouldHandleMinimalUri()" classname="com.monzo.crawler.config.WebCrawlerFactoryTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

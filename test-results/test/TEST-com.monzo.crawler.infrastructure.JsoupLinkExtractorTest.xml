@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:20:54.954Z" hostname="Sergi-Arias.local" time="0.008">
+  <properties/>
+  <testcase name="shouldReturnEmptySetForHtmlWithNoLinks()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.0"/>
+  <testcase name="shouldFilterOutTelLinks()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.002"/>
+  <testcase name="shouldReturnEmptySetForNullHtml()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.0"/>
+  <testcase name="shouldReturnEmptySetForBlankHtml()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.001"/>
+  <testcase name="shouldHandleDuplicateLinks()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.0"/>
+  <testcase name="shouldHandleMalformedUrls()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.001"/>
+  <testcase name="shouldFilterOutJavaScriptLinks()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.001"/>
+  <testcase name="shouldFilterOutStaticFiles()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.001"/>
+  <testcase name="shouldExtractAbsoluteHttpLinks()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.001"/>
+  <testcase name="shouldExtractRelativeLinks()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.0"/>
+  <testcase name="shouldFilterOutMailtoLinks()" classname="com.monzo.crawler.infrastructure.JsoupLinkExtractorTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

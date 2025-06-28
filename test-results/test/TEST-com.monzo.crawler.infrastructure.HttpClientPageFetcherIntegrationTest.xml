@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:20:54.911Z" hostname="Sergi-Arias.local" time="0.04">
+  <properties/>
+  <testcase name="shouldRejectNonHtmlContent()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.004"/>
+  <testcase name="shouldHandleConnectionFailure()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.001"/>
+  <testcase name="shouldHandle404NotFound()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.004"/>
+  <testcase name="shouldHandleMixedCaseContentType()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.004"/>
+  <testcase name="shouldHandle500ServerError()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.005"/>
+  <testcase name="shouldHandleRedirects()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.008"/>
+  <testcase name="shouldFetchHtmlPageSuccessfully()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.007"/>
+  <testcase name="shouldHandle400ClientError()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.004"/>
+  <testcase name="shouldRejectNonHttpSchemes()" classname="com.monzo.crawler.infrastructure.HttpClientPageFetcherIntegrationTest" time="0.001"/>
+  <system-out><![CDATA[12:20:54.909 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:57350
+12:20:54.917 [Test worker] ERROR c.m.c.i.HttpClientPageFetcher - Error fetching URI http://localhost:99999/page: port out of range:99999
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

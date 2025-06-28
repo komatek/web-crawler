@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.component.WebCrawlerComponentTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:20:50.997Z" hostname="Sergi-Arias.local" time="1.435">
+  <properties/>
+  <testcase name="testHandle404Errors()" classname="com.monzo.crawler.component.WebCrawlerComponentTest" time="0.343"/>
+  <testcase name="testHappyPathCrawling()" classname="com.monzo.crawler.component.WebCrawlerComponentTest" time="0.188"/>
+  <testcase name="testConcurrentCrawling()" classname="com.monzo.crawler.component.WebCrawlerComponentTest" time="0.903"/>
+  <system-out><![CDATA[12:20:50.750 [Test worker] INFO  c.m.c.i.c.TestWireMockConfiguration - WireMock server started at: http://localhost:57321
+12:20:50.997 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Shared Redis connection created successfully
+12:20:50.998 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Redis container started on port: 32879
+12:20:50.998 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - WireMock server started once for all tests at: http://localhost:57321
+12:20:51.520 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Crawled pages: [http://localhost:57321/about, http://localhost:57321/blog/post1, http://localhost:57321/, http://localhost:57321/contact, http://localhost:57321/products/widget1, http://localhost:57321/products/widget2, http://localhost:57321/products, http://localhost:57321/team, http://localhost:57321/blog]
+12:20:51.521 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Failed pages: []
+12:20:51.528 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Test completed successfully!
+12:20:51.529 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Total pages crawled: 9
+12:20:51.529 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Total links found: 19
+12:20:51.529 [awaitility-thread] INFO  c.m.c.c.WebCrawlerComponentTest - Failed pages: 0
+12:20:51.572 [virtual-101] INFO  c.m.c.c.WebCrawlerComponentTest - Page http://localhost:57321/ crawled on thread: VirtualThread-101 (ID: 101, Virtual: true, Seq: 1)
+12:20:52.192 [virtual-105] INFO  c.m.c.c.WebCrawlerComponentTest - Page http://localhost:57321/slow1 crawled on thread: VirtualThread-105 (ID: 105, Virtual: true, Seq: 2)
+12:20:52.197 [virtual-106] INFO  c.m.c.c.WebCrawlerComponentTest - Page http://localhost:57321/slow2 crawled on thread: VirtualThread-106 (ID: 106, Virtual: true, Seq: 3)
+12:20:52.207 [virtual-108] INFO  c.m.c.c.WebCrawlerComponentTest - Page http://localhost:57321/slow3 crawled on thread: VirtualThread-108 (ID: 108, Virtual: true, Seq: 4)
+12:20:52.424 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - === CONCURRENCY TEST RESULTS ===
+12:20:52.425 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Total crawling time: 775 ms
+12:20:52.425 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Active thread identifiers: [VirtualThread-108, VirtualThread-105, VirtualThread-106, VirtualThread-101]
+12:20:52.426 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Unique thread IDs count: 4
+12:20:52.426 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - Max concurrent requests: 3
+12:20:52.426 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - =================================
+12:20:52.432 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - ✅ CONCURRENCY VERIFIED: Multiple threads, high concurrency, fast execution
+12:20:52.459 [Test worker] INFO  c.m.c.c.WebCrawlerComponentTest - WireMock server stopped and Redis resources cleaned up
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

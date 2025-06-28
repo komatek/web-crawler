@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.domain.service.UriProcessingServiceTest" tests="37" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:20:54.778Z" hostname="Sergi-Arias.local" time="0.048">
+  <properties/>
+  <testcase name="constructorShouldThrowNullPointerExceptionWhenAllowedDomainIsNull()" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="normalizeUriShouldReturnOriginalUriWhenNormalizationFailsReliable()" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[1] http://example.com/page, http, null, example.com, -1, null, should preserve scheme" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.006"/>
+  <testcase name="[2] https://example.com:8080/page, https, null, example.com, 8080, null, should preserve port" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[3] https://user:pass@example.com/page, https, user:pass, example.com, -1, null, should preserve userInfo" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[4] https://example.com/page?param=value, https, null, example.com, -1, param=value, should preserve query" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[5] https://example.com/page?, https, null, example.com, -1, , should preserve empty query" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[1] https://example.com/page#section1" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.001"/>
+  <testcase name="[2] https://example.com/page#" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[3] https://example.com/page?param=value#fragment" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[4] https://example.com/#section" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[1] https://example.com/page, true, valid URI same domain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.001"/>
+  <testcase name="[2] https://EXAMPLE.COM/page, true, valid URI case insensitive" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[3] http://example.com/page, true, valid URI different scheme" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[4] https://example.com:8080/page, true, valid URI different port" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.001"/>
+  <testcase name="[5] https://other.com/page, false, valid URI different domain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[6] https://sub.example.com/page, false, valid URI subdomain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.001"/>
+  <testcase name="[7] https://com/page, false, valid URI superdomain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[1] https://example.com/page, true, exact domain match" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[2] https://EXAMPLE.COM/page, true, case insensitive match" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[3] http://example.com/page, true, different scheme same domain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[4] https://example.com:8080/page, true, different port same domain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[5] https://other.com/page, false, different domain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.001"/>
+  <testcase name="[6] https://sub.example.com/page, false, subdomain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[7] https://com/page, false, superdomain" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="isSameDomainShouldReturnFalseWhenHostIsNull()" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.003"/>
+  <testcase name="normalizeUriShouldReturnOriginalUriWhenNormalizationFails()" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="normalizeUriShouldHandleComplexUri()" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="isValidForCrawlingShouldReturnFalseWhenHostIsNull()" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.001"/>
+  <testcase name="normalizeUriShouldReturnOriginalUriWhenNormalizationFailsAlternative()" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="isValidForCrawlingShouldReturnFalseWhenUriIsNull()" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[1] https://example.com, /, https://example.com/, should add root path when path is null" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.001"/>
+  <testcase name="[2] https://example.com/, /, https://example.com/, should keep single slash when path is root with trailing slash" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[3] https://example.com/page/, /page, https://example.com/page, should remove trailing slash when path ends with slash" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[4] https://example.com/page, /page, https://example.com/page, should preserve path when path does not end with slash" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <testcase name="[5] https://example.com/level1/level2/level3/, /level1/level2/level3, https://example.com/level1/level2/level3, should handle nested paths" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.001"/>
+  <testcase name="[6] https://example.com//double//slash//path/, //double//slash//path, https://example.com//double//slash//path, should handle paths with multiple slashes" classname="com.monzo.crawler.domain.service.UriProcessingServiceTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

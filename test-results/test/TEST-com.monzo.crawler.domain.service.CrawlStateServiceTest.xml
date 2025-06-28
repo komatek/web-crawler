@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.domain.service.CrawlStateServiceTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:20:54.729Z" hostname="Sergi-Arias.local" time="0.021">
+  <properties/>
+  <testcase name="constructorShouldThrowNullPointerExceptionWhenFrontierQueueIsNull()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="processDiscoveredLinksShouldFilterOutInvalidLinks()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.003"/>
+  <testcase name="tryAddToFrontierShouldAddToQueueWhenUriIsValidAndNotVisited()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="processDiscoveredLinksShouldMaintainOrderIndependence()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="constructorShouldThrowNullPointerExceptionWhenVisitedRepositoryIsNull()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="isFrontierEmptyShouldReturnFalseWhenQueueHasElements()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.0"/>
+  <testcase name="getNextUriShouldDelegateToFrontierQueue()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.0"/>
+  <testcase name="tryAddToFrontierShouldNotAddToQueueWhenUriIsNotValidForCrawling()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="processDiscoveredLinksShouldHandleMixedScenario()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="constructorShouldThrowNullPointerExceptionWhenUriProcessingServiceIsNull()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.0"/>
+  <testcase name="getNextUriShouldReturnNullWhenQueueIsEmpty()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.0"/>
+  <testcase name="processDiscoveredLinksShouldReturnEmptySetWhenNoLinksProvided()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.0"/>
+  <testcase name="processDiscoveredLinksShouldProcessValidUnvisitedLinks()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="markAsVisitedShouldReturnFalseWhenAlreadyVisited()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.0"/>
+  <testcase name="processDiscoveredLinksShouldFilterOutVisitedLinks()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="isFrontierEmptyShouldDelegateToFrontierQueue()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.0"/>
+  <testcase name="tryAddToFrontierShouldNotAddToQueueWhenUriIsAlreadyVisited()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.001"/>
+  <testcase name="markAsVisitedShouldDelegateToVisitedRepository()" classname="com.monzo.crawler.domain.service.CrawlStateServiceTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

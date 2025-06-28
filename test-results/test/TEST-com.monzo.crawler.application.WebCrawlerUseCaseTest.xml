@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.application.WebCrawlerUseCaseTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:20:44.114Z" hostname="Sergi-Arias.local" time="0.192">
+  <properties/>
+  <testcase name="shouldProcessMultipleUrisWhenMultipleUrisInFrontier()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.034"/>
+  <testcase name="shouldThrowNullPointerExceptionWhenPageProcessingServiceIsNull()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.002"/>
+  <testcase name="shouldContinueProcessingEvenWhenSomeTasksFail()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.005"/>
+  <testcase name="shouldAddStartUriToFrontierWhenCrawlStarts()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.001"/>
+  <testcase name="shouldSkipAlreadyVisitedUrisInMultipleUriScenario()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.002"/>
+  <testcase name="shouldHandleInterruptedExceptionGracefully()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.005"/>
+  <testcase name="shouldContinueCrawlingWhenNewUrisAddedDuringProcessing()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.003"/>
+  <testcase name="shouldHandleNullStartUri()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.001"/>
+  <testcase name="shouldThrowNullPointerExceptionWhenCrawlStateServiceIsNull()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.001"/>
+  <testcase name="shouldThrowNullPointerExceptionWhenBothServicesAreNull()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.001"/>
+  <testcase name="shouldRespectConcurrencyLimit()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.111"/>
+  <testcase name="shouldCreateWebCrawlerWithValidDependencies()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.001"/>
+  <testcase name="shouldNotProcessUriWhenAlreadyVisited()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.001"/>
+  <testcase name="shouldCallServicesInCorrectOrder()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.004"/>
+  <testcase name="shouldProcessSingleUriWhenOnlyOneUriInFrontier()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.002"/>
+  <testcase name="shouldWaitForTasksToCompleteWhenFrontierBecomesEmpty()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.002"/>
+  <testcase name="shouldCompleteSuccessfullyWhenNoUrisInFrontier()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.001"/>
+  <testcase name="shouldHandleNullUriFromGetNextUri()" classname="com.monzo.crawler.application.WebCrawlerUseCaseTest" time="0.001"/>
+  <system-out><![CDATA[12:20:44.167 [virtual-44] WARN  c.m.c.application.WebCrawlerUseCase - Task for URI https://example.com/page1 was interrupted.
+]]></system-out>
+  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/Users/sergiarias/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.14.15/b4cc9d88d5de562bf75b3a54ab436ad01b3f72d/byte-buddy-agent-1.14.15.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

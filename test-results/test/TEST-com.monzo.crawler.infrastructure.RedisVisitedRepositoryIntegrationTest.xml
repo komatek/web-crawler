@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:21:00.380Z" hostname="Sergi-Arias.local" time="1.971">
+  <properties/>
+  <testcase name="shouldMarkUriAsVisitedAndReturnTrue()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.006"/>
+  <testcase name="shouldHandleEmptyPath()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.006"/>
+  <testcase name="shouldHandleConcurrentMarkingOfSameUri()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.013"/>
+  <testcase name="shouldPersistDataAcrossInstances()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.005"/>
+  <testcase name="shouldHandleMultipleUris()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.006"/>
+  <testcase name="shouldReturnFalseWhenMarkingAlreadyVisitedUri()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.005"/>
+  <testcase name="shouldHandleUrisWithDifferentSchemes()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.005"/>
+  <testcase name="shouldHandleUrisWithQueryParameters()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.006"/>
+  <testcase name="shouldHandleUrisWithSpecialCharacters()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.004"/>
+  <testcase name="shouldHandleLargeNumberOfUris()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="1.013"/>
+  <testcase name="shouldHandleMixedConcurrentOperations()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.224"/>
+  <testcase name="shouldBeThreadSafeForConcurrentReads()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.107"/>
+  <testcase name="shouldVerifyRedisSetOperations()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.005"/>
+  <testcase name="shouldReturnFalseForUnvisitedUri()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.002"/>
+  <testcase name="shouldBeThreadSafeForConcurrentMarkings()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.542"/>
+  <testcase name="shouldHandleEncodedUris()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.004"/>
+  <testcase name="shouldHandleUrisWithFragments()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.003"/>
+  <testcase name="shouldHandleUrisWithDifferentPaths()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.004"/>
+  <testcase name="shouldHandleUrisWithDifferentPorts()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.003"/>
+  <testcase name="shouldHandleVeryLongUris()" classname="com.monzo.crawler.infrastructure.RedisVisitedRepositoryIntegrationTest" time="0.003"/>
+  <system-out><![CDATA[12:21:00.379 [Test worker] INFO  c.m.c.i.c.TestRedisConfiguration - Shared Redis connection created successfully
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

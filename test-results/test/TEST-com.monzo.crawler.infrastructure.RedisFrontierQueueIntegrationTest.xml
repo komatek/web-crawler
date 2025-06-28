@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2025-06-28T10:20:57.397Z" hostname="Sergi-Arias.local" time="1.203">
+  <properties/>
+  <testcase name="shouldMaintainFifoOrder()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.067"/>
+  <testcase name="shouldHandleEmptyPath()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.016"/>
+  <testcase name="shouldBeThreadSafeForConcurrentEnqueues()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.161"/>
+  <testcase name="shouldReturnTrueForEmptyQueueInitially()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.007"/>
+  <testcase name="shouldHandleMixedEnqueueDequeueOperations()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.013"/>
+  <testcase name="shouldPersistDataAcrossInstances()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.009"/>
+  <testcase name="shouldHandleUrisWithDifferentSchemes()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.009"/>
+  <testcase name="shouldCorrectlyReportQueueState()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.009"/>
+  <testcase name="shouldHandleUrisWithSpecialCharacters()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.009"/>
+  <testcase name="shouldHandleLargeNumberOfUris()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.775"/>
+  <testcase name="shouldHandleMixedConcurrentOperations()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.018"/>
+  <testcase name="shouldReturnNullWhenDequeueingFromEmptyQueue()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.012"/>
+  <testcase name="shouldVerifyRedisListOperations()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.01"/>
+  <testcase name="shouldHandleDuplicateUris()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.008"/>
+  <testcase name="shouldEnqueueAndDequeueSingleUri()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.006"/>
+  <testcase name="shouldHandleEncodedUris()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.006"/>
+  <testcase name="shouldHandleVariousUriFormats()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.012"/>
+  <testcase name="shouldBeThreadSafeForConcurrentDequeues()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.03"/>
+  <testcase name="shouldHandleUrisWithDifferentPorts()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.011"/>
+  <testcase name="shouldHandleVeryLongUris()" classname="com.monzo.crawler.infrastructure.RedisFrontierQueueIntegrationTest" time="0.009"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
