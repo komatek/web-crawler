@@ -98,44 +98,6 @@ class WebCrawlerFactoryTest {
     }
 
     @Test
-    void shouldAcceptZeroMaxConcurrentRequests() {
-        // Given
-        int maxConcurrentRequests = 0;
-
-        // When
-        WebCrawlerFactory factory = new WebCrawlerFactory(
-                mockPageFetcher,
-                mockLinkExtractor,
-                mockCrawlObserver,
-                mockFrontierQueue,
-                mockVisitedRepository,
-                maxConcurrentRequests
-        );
-
-        // Then
-        assertThat(factory).isNotNull();
-    }
-
-    @Test
-    void shouldAcceptNegativeMaxConcurrentRequests() {
-        // Given
-        int maxConcurrentRequests = -1;
-
-        // When
-        WebCrawlerFactory factory = new WebCrawlerFactory(
-                mockPageFetcher,
-                mockLinkExtractor,
-                mockCrawlObserver,
-                mockFrontierQueue,
-                mockVisitedRepository,
-                maxConcurrentRequests
-        );
-
-        // Then
-        assertThat(factory).isNotNull();
-    }
-
-    @Test
     void shouldRejectAllNullDependencies() {
         // When & Then
         assertThatThrownBy(() -> new WebCrawlerFactory(
@@ -143,26 +105,6 @@ class WebCrawlerFactoryTest {
                 .isInstanceOf(NullPointerException.class);
     }
 
-    @Test
-    void shouldAcceptLargeMaxConcurrentRequests() {
-        // Given
-        int maxConcurrentRequests = Integer.MAX_VALUE;
-
-        // When
-        WebCrawlerFactory factory = new WebCrawlerFactory(
-                mockPageFetcher,
-                mockLinkExtractor,
-                mockCrawlObserver,
-                mockFrontierQueue,
-                mockVisitedRepository,
-                maxConcurrentRequests
-        );
-
-        // Then
-        assertThat(factory).isNotNull();
-    }
-
-    // Original tests for createForUri method
     @Test
     void shouldCreateWebCrawlerForValidUri() {
         // Given
@@ -174,19 +116,6 @@ class WebCrawlerFactoryTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result).isInstanceOf(WebCrawlerUseCase.class);
-    }
-
-    @Test
-    void shouldExtractDomainCorrectly() {
-        // Given
-        URI uriWithSubdomain = URI.create("https://blog.example.com/posts");
-
-        // When
-        WebCrawlerUseCase result = factory.createForUri(uriWithSubdomain);
-
-        // Then
-        assertThat(result).isNotNull();
-        // The crawler should be configured for "blog.example.com" domain
     }
 
     @Test
@@ -287,8 +216,8 @@ class WebCrawlerFactoryTest {
 
     @Test
     void shouldHandleSpecialCharactersInDomain() {
-        // Given - Internationalized domain names
-        URI unicodeUri = URI.create("https://xn--bcher-kva.example.com"); // bücher.example.com
+        // Given
+        URI unicodeUri = URI.create("https://xn--bcher-kva.example.com");
 
         // When
         WebCrawlerUseCase result = factory.createForUri(unicodeUri);

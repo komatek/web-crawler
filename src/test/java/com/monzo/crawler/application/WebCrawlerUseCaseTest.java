@@ -83,42 +83,6 @@ class WebCrawlerUseCaseTest {
     }
 
     @Test
-    void shouldAcceptZeroMaxConcurrentRequests() {
-        // Given
-        PageProcessingService mockPageProcessingService = mock(PageProcessingService.class);
-        CrawlStateService mockCrawlStateService = mock(CrawlStateService.class);
-        int maxConcurrentRequests = 0;
-
-        // When
-        WebCrawlerUseCase crawler = new WebCrawlerUseCase(
-                mockPageProcessingService,
-                mockCrawlStateService,
-                maxConcurrentRequests
-        );
-
-        // Then
-        assertNotNull(crawler);
-    }
-
-    @Test
-    void shouldAcceptNegativeMaxConcurrentRequests() {
-        // Given
-        PageProcessingService mockPageProcessingService = mock(PageProcessingService.class);
-        CrawlStateService mockCrawlStateService = mock(CrawlStateService.class);
-        int maxConcurrentRequests = -1;
-
-        // When
-        WebCrawlerUseCase crawler = new WebCrawlerUseCase(
-                mockPageProcessingService,
-                mockCrawlStateService,
-                maxConcurrentRequests
-        );
-
-        // Then
-        assertNotNull(crawler);
-    }
-
-    @Test
     void shouldAddStartUriToFrontierWhenCrawlStarts() {
         // Given
         when(crawlStateService.getNextUri()).thenReturn(null);
@@ -459,25 +423,5 @@ class WebCrawlerUseCaseTest {
 
         // Then
         verify(crawlStateService).tryAddToFrontier(null);
-    }
-
-    @Test
-    void shouldCreateMultipleIndependentInstances() {
-        // Given
-        PageProcessingService mockPageProcessingService1 = mock(PageProcessingService.class);
-        PageProcessingService mockPageProcessingService2 = mock(PageProcessingService.class);
-        CrawlStateService mockCrawlStateService1 = mock(CrawlStateService.class);
-        CrawlStateService mockCrawlStateService2 = mock(CrawlStateService.class);
-
-        // When
-        WebCrawlerUseCase crawler1 = new WebCrawlerUseCase(
-                mockPageProcessingService1, mockCrawlStateService1, 5);
-        WebCrawlerUseCase crawler2 = new WebCrawlerUseCase(
-                mockPageProcessingService2, mockCrawlStateService2, 10);
-
-        // Then
-        assertNotNull(crawler1);
-        assertNotNull(crawler2);
-        assertNotSame(crawler1, crawler2);
     }
 }

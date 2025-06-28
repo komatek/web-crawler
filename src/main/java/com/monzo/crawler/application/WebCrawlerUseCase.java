@@ -2,7 +2,6 @@ package com.monzo.crawler.application;
 
 import com.monzo.crawler.domain.service.CrawlStateService;
 import com.monzo.crawler.domain.service.PageProcessingService;
-import com.monzo.crawler.domain.service.UriProcessingService;
 import java.net.URI;
 import java.util.Objects;
 import java.util.concurrent.*;

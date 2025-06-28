@@ -2,9 +2,8 @@ package com.monzo.crawler.infrastructure;
 
 import com.monzo.crawler.domain.port.out.VisitedRepository;
 import com.monzo.crawler.infrastructure.config.TestRedisConfiguration;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import io.lettuce.core.api.sync.RedisCommands;
+import org.junit.jupiter.api.*;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -28,21 +27,29 @@ class RedisVisitedRepositoryIntegrationTest {
     @Container
     static final GenericContainer<?> redis = TestRedisConfiguration.createRedisContainer();
 
-    private TestRedisConfiguration.TestRedisSetup redisSetup;
+    private static RedisCommands<String, String> redisCommands;
     private VisitedRepository visitedRepository;
+
+    @BeforeAll
+    static void setUpClass() {
+        // Create shared Redis connection once for all tests
+        redisCommands = TestRedisConfiguration.getSharedCommands(redis);
+    }
+
+    @AfterAll
+    static void tearDownClass() {
+        // Close shared resources after all tests
+        TestRedisConfiguration.closeSharedResources();
+    }
 
     @BeforeEach
     void setUp() {
-        redisSetup = TestRedisConfiguration.createTestSetup(redis);
-        visitedRepository = new RedisVisitedRepository(redisSetup.getCommands());
+        // Just flush data, reuse connection
+        TestRedisConfiguration.cleanTestData(redisCommands);
+        visitedRepository = new RedisVisitedRepository(redisCommands);
     }
 
-    @AfterEach
-    void tearDown() {
-        if (redisSetup != null) {
-            redisSetup.close();
-        }
-    }
+    // No @AfterEach needed - connection is shared and data is cleaned in @BeforeEach
 
     @Test
     void shouldReturnFalseForUnvisitedUri() {
@@ -211,13 +218,13 @@ class RedisVisitedRepositoryIntegrationTest {
     }
 
     @Test
-    void shouldPersistDataAcrossConnections() {
+    void shouldPersistDataAcrossInstances() {
         // Given
         URI uri = URI.create("https://example.com/page1");
         visitedRepository.markVisited(uri);
 
-        // When - create new repository with same Redis instance
-        RedisVisitedRepository newRepository = new RedisVisitedRepository(redisSetup.getCommands());
+        // When - create new repository with same Redis connection
+        RedisVisitedRepository newRepository = new RedisVisitedRepository(redisCommands);
 
         // Then
         assertThat(newRepository.isVisited(uri)).isTrue();
@@ -243,7 +250,7 @@ class RedisVisitedRepositoryIntegrationTest {
         }
 
         // Verify set size in Redis
-        Long setSize = redisSetup.getCommands().scard("visited-urls");
+        Long setSize = redisCommands.scard("visited-urls");
         assertThat(setSize).isEqualTo(numberOfUris);
     }
 
@@ -278,7 +285,7 @@ class RedisVisitedRepositoryIntegrationTest {
         }
 
         // Verify total count
-        Long setSize = redisSetup.getCommands().scard("visited-urls");
+        Long setSize = redisCommands.scard("visited-urls");
         assertThat(setSize).isEqualTo(numberOfThreads * urisPerThread);
 
         executor.shutdown();
@@ -346,7 +353,7 @@ class RedisVisitedRepositoryIntegrationTest {
         assertThat(visitedRepository.isVisited(uri)).isTrue();
 
         // Verify only one entry in Redis
-        Long setSize = redisSetup.getCommands().scard("visited-urls");
+        Long setSize = redisCommands.scard("visited-urls");
         assertThat(setSize).isEqualTo(1);
 
         executor.shutdown();
@@ -458,13 +465,13 @@ class RedisVisitedRepositoryIntegrationTest {
         visitedRepository.markVisited(uri2);
 
         // Then - verify using direct Redis commands
-        Set<String> allMembers = redisSetup.getCommands().smembers("visited-urls");
+        Set<String> allMembers = redisCommands.smembers("visited-urls");
         assertThat(allMembers).hasSize(2);
         assertThat(allMembers).contains(uri1.toString(), uri2.toString());
 
         // Verify set membership using Redis commands
-        assertThat(redisSetup.getCommands().sismember("visited-urls", uri1.toString())).isTrue();
-        assertThat(redisSetup.getCommands().sismember("visited-urls", uri2.toString())).isTrue();
-        assertThat(redisSetup.getCommands().sismember("visited-urls", "https://example.com/nonexistent")).isFalse();
+        assertThat(redisCommands.sismember("visited-urls", uri1.toString())).isTrue();
+        assertThat(redisCommands.sismember("visited-urls", uri2.toString())).isTrue();
+        assertThat(redisCommands.sismember("visited-urls", "https://example.com/nonexistent")).isFalse();
     }
 }

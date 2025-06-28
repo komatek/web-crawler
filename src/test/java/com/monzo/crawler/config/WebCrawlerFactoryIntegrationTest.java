@@ -63,10 +63,6 @@ class WebCrawlerFactoryIntegrationTest {
 
         // Then
         assertThat(crawler).isNotNull();
-
-        // Verify the crawler is properly wired and functional
-        // (In a real test, you might want to mock a simple web server
-        // and verify it can actually perform a basic crawl)
     }
 
     @Test

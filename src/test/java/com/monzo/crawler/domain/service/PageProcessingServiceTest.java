@@ -36,7 +36,6 @@ class PageProcessingServiceTest {
 
     private static final String HTML_CONTENT = "<html><body><h1>Test Page</h1><a href='/link1'>Link 1</a><a href='/link2'>Link 2</a></body></html>";
 
-    // Constructor validation tests
     @Test
     void constructorShouldThrowNullPointerExceptionWhenPageFetcherIsNull() {
         assertThrows(NullPointerException.class, () ->
@@ -303,7 +302,7 @@ class PageProcessingServiceTest {
         Set<URI> discoveredLinks = Set.of(LINK_1_URI);
         Set<URI> enqueuedLinks = Set.of(LINK_1_URI);
         PageData successPageData = new PageData(HTML_CONTENT, PageData.Status.SUCCESS);
-        RuntimeException observerException = new RuntimeException("Observer database connection failed");
+        RuntimeException observerException = new RuntimeException("Observer connection failed");
 
         when(pageFetcher.fetch(TEST_URI)).thenReturn(successPageData);
         when(linkExtractor.extractLinks(HTML_CONTENT, TEST_URI)).thenReturn(discoveredLinks);

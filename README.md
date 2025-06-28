@@ -85,7 +85,7 @@ Infrastructure      → Redis adapters, HTTP client, Jsoup parser
 ## How It Works
 
 1. **Start with seed URL**: Adds initial URL to frontier queue
-2. **Process queue**: Continuously dequeues URLs to crawl
+2. **Process queue**: Continuously dequeues URLs to crawl based on a BFS algorithm
 3. **Fetch & parse**: Downloads HTML and extracts links using Jsoup
 4. **Filter & normalize**: Removes external domains, normalizes URLs
 5. **Track state**: Marks URLs as visited, adds new URLs to queue
@@ -101,16 +101,6 @@ crawler.redis.url=redis://localhost:6379
 
 # Performance tuning  
 crawler.max.concurrent.requests=80
-crawler.http.timeout.seconds=5
-
-# HTTP headers
-crawler.user.agent=Monzo-Java-Crawler/1.0
-```
-
-Override with environment variables:
-```bash
-export CRAWLER_MAX_CONCURRENT_REQUESTS=50
-./gradlew run --args="https://monzo.com"
 ```
 
 ## Testing
@@ -137,7 +127,6 @@ This implementation prioritizes **simplicity for the coding challenge**. For pro
 ### Current Limitations
 - **No robots.txt compliance** - doesn't respect crawling rules
 - **Memory-bound storage** - Redis holds all URLs in memory
-- **Single domain only** - can't crawl across multiple sites
 - **No JavaScript rendering** - only parses static HTML
 - **Basic rate limiting** - simple semaphore approach
 - **Limited observability** - basic console logging only
@@ -247,6 +236,26 @@ https://monzo.com/page#section → https://monzo.com/page (remove fragments)
 - ✅ **Comprehensive testing** with different test strategies
 - ✅ **Production awareness** while keeping scope manageable
 - ✅ **Modern Java features** like virtual threads and records
+
+**Architecture choice: Command-line vs Web Service**
+
+This implementation is designed as a **runnable local application** for the coding challenge, but the hexagonal architecture makes it easily adaptable to a **Spring Boot web service** for production:
+
+**Current (Challenge):**
+```bash
+# Direct execution
+./gradlew run --args="https://monzo.com"
+```
+
+**Production (Web Service):**
+```bash
+# HTTP API
+POST /api/crawl/start {"url": "https://monzo.com"}
+GET  /api/crawl/status/{jobId}
+GET  /api/crawl/results/{jobId}
+```
+
+The **domain layer remains unchanged** - only the **application and infrastructure layers** would be modified to add REST endpoints, making this a perfect example of hexagonal architecture flexibility.
 
 The goal was to show **engineering maturity** while **keeping complexity reasonable** for a time-boxed challenge.
 

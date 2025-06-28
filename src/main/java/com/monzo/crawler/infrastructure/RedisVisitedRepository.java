@@ -7,6 +7,7 @@ import java.net.URI;
 public class RedisVisitedRepository implements VisitedRepository {
 
     private final RedisCommands<String, String> redis;
+    private static final String VISITED_SET = "visited-urls";
 
     public RedisVisitedRepository(RedisCommands<String, String> redis) {
         this.redis = redis;
@@ -14,11 +15,11 @@ public class RedisVisitedRepository implements VisitedRepository {
 
     @Override
     public boolean isVisited(URI uri) {
-        return redis.sismember("visited-urls", uri.toString());
+        return redis.sismember(VISITED_SET, uri.toString());
     }
 
     @Override
     public boolean markVisited(URI uri) {
-        return redis.sadd("visited-urls", uri.toString()) == 1;
+        return redis.sadd(VISITED_SET, uri.toString()) == 1;
     }
 }
